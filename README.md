@@ -14,6 +14,7 @@ GencPusula/
 │   ├── dotnet-tools.json     yerel araç manifestosu (dotnet-ef sürümünü sabitler)
 │   └── GencPusula.Web/       ASP.NET Core projesi
 ├── mobile/genc_pusula/       Flutter uygulaması
+├── scripts/                  kurulum scriptleri (setup.sh, setup.ps1, setup-db.sql)
 ├── docs/                     veritabanı şeması, uç nokta listesi, karar kayıtları
 ├── .gitignore
 ├── README.md
@@ -73,15 +74,43 @@ ve örnek istek/yanıt), `kararlar.md` (hangi teknik kararın neden alındığı
 
 ## Yeni geliştirici kurulumu (API)
 
-**Ön koşullar:** .NET 10 SDK, PostgreSQL 16 veya üzeri, `openssl` (JWT anahtarı
-üretmek için; yalnızca Linux/macOS'ta bulunur).
+**Ön koşullar:** .NET 10 SDK, PostgreSQL 16 veya üzeri. Linux/macOS'ta `openssl`;
+Windows'ta ek bir şey gerekmez (script JWT anahtarını kendisi üretir).
 
-Kontrol:
+Kontrol: `dotnet --list-sdks` (10.x görmelisin) · `pg_isready` ("accepting connections" demeli)
+
+### Hızlı kurulum (tek seferlik, 3 komut)
 
 ```
-dotnet --list-sdks      # 10.x görmelisin
-pg_isready              # "accepting connections" demeli
+git clone https://github.com/AliOsmanLACINKAYA/GencPusula.git
+cd GencPusula && ./scripts/setup.sh "DB_PAROLASI"                  # Linux/macOS
+cd GencPusula && .\scripts\setup.ps1 -DbPassword "DB_PAROLASI"     # Windows
+cd api/GencPusula.Web && dotnet run
 ```
+
+Script sırasıyla: yerel .NET araçlarını geri yükler, veritabanını ve uygulama
+kullanıcısını oluşturur, gizli ayarları (`ConnectionStrings:DefaultConnection` ve
+`Jwt:Key`) user-secrets'e yazar, şemayı migration ile kurar. Tekrar çalıştırılabilir;
+var olan kurulumu bozmaz.
+
+- `DB_PAROLASI` verilmezse script güvenli biçimde sorar.
+- Parolada `;` ve `'` bulunmamalıdır; bu karakterler bağlantı dizesini ve SQL komutunu bozar.
+- Linux'ta `psql -U postgres` peer authentication nedeniyle reddedilirse script **otomatik**
+  `sudo -u postgres psql` ile tekrar dener (sudo parolanı sorar). İkisi de başarısız olursa
+  çalıştırman gereken komutu ekrana yazar. Windows'ta `sudo` yoktur; script `psql`i
+  `-U postgres` ile çağırır ve PostgreSQL parolasını sorar.
+- Windows'ta `psql` PATH'te değilse script `C:\Program Files\PostgreSQL\*\bin\psql.exe`
+  yolunu kendi arar; bulamazsa `scripts\setup-db.sql` dosyasını pgAdmin ile çalıştırın.
+- Windows'ta "running scripts is disabled on this system" hatası alırsan betik çalıştırma
+  izni kapalıdır. Şu şekilde çalıştır:
+  `powershell -ExecutionPolicy Bypass -File .\scripts\setup.ps1 -DbPassword "DB_PAROLASI"`
+  ya da o oturum için: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+- Windows'ta script `psql`e bağlanırken **PostgreSQL süper kullanıcı parolasını** sorar;
+  bu, kurulum sırasında belirlediğin `postgres` parolasıdır. Linux'ta gerekmez.
+- Linux/macOS'ta script'in çalıştırma izni olmalı: `chmod +x scripts/setup.sh`
+
+Aşağıdaki 1–5. adımlar, script'in yaptığı işin elle ve açıklamalı hâlidir. Sunumda
+komutları anlatabilmek için bu bölümün okunması önerilir.
 
 ### 1) Depoyu al ve aracı geri yükle
 
@@ -112,6 +141,15 @@ Son satır zorunludur: PostgreSQL 15 ve sonrasında `public` şemasında tablo o
 yetkisi normal kullanıcılara varsayılan olarak verilmez. Bu satır atlanırsa
 `dotnet ef database update` şu hatayı verir: `permission denied for schema public`.
 
+Aynı işi yapan script (`scripts/setup-db.sql`) tekrar çalıştırılabilir biçimde yazıldı:
+
+```
+psql -U postgres -v db_password='DB_PAROLASI' -f scripts/setup-db.sql
+```
+
+Windows'ta `sudo` yoktur; PostgreSQL komutlarını pgAdmin ya da SQL Shell (psql)
+üzerinden çalıştırın.
+
 Uygulama veritabanına `postgres` süper kullanıcısıyla bağlanmaz; yalnızca bu adımda
 oluşturulan `gencpusula_app` kullanıcısı kullanılır.
 
@@ -119,22 +157,27 @@ oluşturulan `gencpusula_app` kullanıcısı kullanılır.
 
 Bu değerler depoya girmez; her geliştiricinin makinesinde ayrı durur.
 
+**Komutları `api/GencPusula.Web` klasörünün içinden çalıştır.** Depo kökünden
+çalıştırırsan şu hatayı alırsın:
+`Could not find a MSBuild project file in '...'. Specify which project to use with the --project option.`
+Çözüm: önce `cd api/GencPusula.Web`, ya da komuta `--project api/GencPusula.Web` ekle.
+
 ```
 cd GencPusula.Web
-dotnet user-secrets init
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Database=gencpusula;Username=gencpusula_app;Password=DB_PAROLASI"
 dotnet user-secrets set "Jwt:Key" "$(openssl rand -hex 48)"
-dotnet user-secrets set "Jwt:Issuer" "GencPusula"
-dotnet user-secrets set "Jwt:Audience" "GencPusulaMobile"
 dotnet user-secrets list
 ```
+
+`Jwt:Issuer` ve `Jwt:Audience` sır değildir; `appsettings.json` içinde tanımlıdır.
+Yalnızca yukarıdaki iki değer gizli depoda tutulur.
 
 `DB_PAROLASI` bu adımda ve 2. adımda birebir aynı olmalıdır. Farklı olursa bağlantı
 `28P01 password authentication failed` hatası verir. PostgreSQL parolayı geri
 okunamayacak biçimde sakladığı için doğrulamanın tek yolu bağlanmayı denemektir.
 
-`dotnet user-secrets init` projede `UserSecretsId` zaten tanımlıysa hiçbir şey
-değiştirmez; güvenle çalıştırılabilir.
+`dotnet user-secrets init` bu projede gerekmez: `UserSecretsId` zaten `.csproj`
+dosyasında tanımlıdır. Yine de çalıştırılırsa hiçbir şeyi bozmaz.
 
 ### 4) Şemayı oluştur
 
