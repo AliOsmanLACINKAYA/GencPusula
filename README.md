@@ -1,3 +1,4 @@
+hafta-01-anasayfa-yonlendirmeleri
 # GencPusula
 
 Üniversite öğrencileri için burs, staj, yarışma ve etkinlik fırsatlarını tek merkezde
