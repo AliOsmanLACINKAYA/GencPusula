@@ -2,7 +2,7 @@
 
 **BLM4581 Ağ Tabanlı Teknolojiler ve Uygulamaları — 2026–2027 Güz Yarıyılı Dönem Projesi**
 
-## 1. Projenin Amacı ve Kapsamı
+## Projenin Amacı ve Kapsamı
 Genç Pusula; Türkiye genelindeki ön lisans, lisans, lisansüstü ve doktora öğrencilerinin burs, staj ilanları, yarışma ve etkinlik duyurularına tek bir merkezden, dijital gazete formatında ulaşmasını sağlayan web tabanlı bir portaldır. Öğrenciler kendi bölüm, sınıf ve not ortalaması bilgilerine göre fırsatlara uygunluk durumlarını görebilir, başvurularını ve kontrol listelerini takip edebilirler.
 
 ### İlk Sürüme Alınan Özellikler (Kapsam İçi)
@@ -16,18 +16,17 @@ Genç Pusula; Türkiye genelindeki ön lisans, lisans, lisansüstü ve doktora �
 * Kurum web sitelerinden otomatik veri kazıma (web scraping) botları.
 * Uygulama içi anlık mesajlaşma ve ödeme/bağış altyapısı.
 
-## 2. Geliştirme Ekibi
-* **Ali Osman LAÇİNKAYA** (`@AliOsmanLACINKAYA`)
-* **Zeynep Lâl KAŞIKCI**
+## Geliştirme Ekibi
+* **Ali Osman LAÇİNKAYA**
 * **Kadirhan Topal**
 
-## 3. Kullanılan Teknolojiler
+## Kullanılan Teknolojiler
 * **Proje Türü:** ASP.NET Core (Razor Pages) & Web API
 * **Veritabanı:** PostgreSQL
 * **ORM:** Entity Framework Core (Code-First & Migrations)
 * **Kimlik Doğrulama:** ASP.NET Core Identity (Yönetici ve Kullanıcı Rolleri)
 
-## 4. Kurulum ve Çalıştırma Adımları
+## Kurulum ve Çalıştırma Adımları
 
 ### Gereksinimler
 * .NET SDK
