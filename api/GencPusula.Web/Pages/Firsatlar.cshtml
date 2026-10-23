@@ -1,0 +1,21 @@
+﻿@page
+@model GencPusula.Web.Pages.FirsatlarModel
+@{
+    ViewData["Title"] = "Fırsatlar";
+}
+
+<div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-0">Fırsat Listesi</h2>
+        <p class="text-muted mb-0">Seçili Kategori: <strong>@Model.Kategori</strong></p>
+    </div>
+    <a asp-page="/Index" class="btn btn-outline-secondary btn-sm">Ana Sayfaya Dön</a>
+</div>
+
+<div class="mb-4 d-flex gap-2 flex-wrap">
+    <a asp-page="/Firsatlar" asp-route-kategori="Tumu" class="btn btn-sm btn-dark">Tümü</a>
+    <a asp-page="/Firsatlar" asp-route-kategori="Burs" class="btn btn-sm btn-outline-dark">Burs</a>
+    <a asp-page="/Firsatlar" asp-route-kategori="Staj" class="btn btn-sm btn-outline-dark">Staj</a>
+    <a asp-page="/Firsatlar" asp-route-kategori="Yarisma" class="btn btn-sm btn-outline-dark">Yarışma</a>
+    <a asp-page="/Firsatlar" asp-route-kategori="Etkinlik" class="btn btn-sm btn-outline-dark">Etkinlik</a>
+</div>

@@ -22,6 +22,133 @@ namespace GencPusula.Web.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("GencPusula.Web.Models.BasvuruKaydi", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BasvuruDurumu")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("FirsatId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("KayitTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("KisiselNotlar")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("OgrenciProfiliId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FirsatId");
+
+                    b.HasIndex("OgrenciProfiliId");
+
+                    b.ToTable("BasvuruKayitlari");
+                });
+
+            modelBuilder.Entity("GencPusula.Web.Models.Firsat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Aciklama")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ArananBolum")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<int?>("ArananSinif")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Baslik")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("FirsatTuru")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("GuncellikEtiketi")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("KaynakBaglantisi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("MinimumNotOrtalamasi")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("OnaylandiMi")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Sehir")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("SonKontrolTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("SonTarih")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Firsatlar");
+                });
+
+            modelBuilder.Entity("GencPusula.Web.Models.OgrenciProfili", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bolum")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("IlgiAlanlari")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("KullaniciId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("NotOrtalamasi")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Sinif")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OgrenciProfilleri");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -222,6 +349,25 @@ namespace GencPusula.Web.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("GencPusula.Web.Models.BasvuruKaydi", b =>
+                {
+                    b.HasOne("GencPusula.Web.Models.Firsat", "Firsat")
+                        .WithMany("BasvuruKayitlari")
+                        .HasForeignKey("FirsatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GencPusula.Web.Models.OgrenciProfili", "OgrenciProfili")
+                        .WithMany("BasvuruKayitlari")
+                        .HasForeignKey("OgrenciProfiliId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Firsat");
+
+                    b.Navigation("OgrenciProfili");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -271,6 +417,16 @@ namespace GencPusula.Web.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("GencPusula.Web.Models.Firsat", b =>
+                {
+                    b.Navigation("BasvuruKayitlari");
+                });
+
+            modelBuilder.Entity("GencPusula.Web.Models.OgrenciProfili", b =>
+                {
+                    b.Navigation("BasvuruKayitlari");
                 });
 #pragma warning restore 612, 618
         }
