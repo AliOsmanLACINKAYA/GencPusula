@@ -426,3 +426,18 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# --- Gizli bilgiler ---
+**/appsettings.Development.json
+**/secrets.json
+
+# --- Flutter / Dart ---
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/build/
+**/android/key.properties
+**/android/.gradle/
+**/ios/Pods/
+**/ios/.symlinks/
+*.iml
