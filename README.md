@@ -6,6 +6,7 @@ toplayan, dijital gazete formatında bir portal. Öğrenciler profillerine ve il
 alanlarına uygun fırsatları görüntüler, ilgilendiklerini kaydeder ve başvuru
 durumlarını takip eder; yönetici rolündeki kullanıcılar içeriği panelden yönetir.
 
+<sup> Proje Anlatımları Google Drive Bağlantısı: https://drive.google.com/drive/folders/1SQFRD--oD7BQfMXgecNUBuDJUZLLhb4H?usp=sharing </sup>
 ## Depo yapısı
 
 ```
