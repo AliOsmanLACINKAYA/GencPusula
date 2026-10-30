@@ -1,44 +1,45 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GencPusula.Web.Models;
-
-public class Firsat
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+// Doğrulama kurallarını bu dosayda kullanacağız.
+namespace GencPusula.Web.Models
 {
-    public int Id { get; set; }
+    public class Firsat
+    {
+        //Birincil anahtar ID olarak belirlendi
+        [Key]
+        public int Id { get; set; }
 
-    [Required]
-    [MaxLength(200)]
-    public string Baslik { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Fırsat türü zorunludur.")]
+        [StringLength(50)]
+        [Display(Name = "Fırsat Türü")]
+        public string FirsatTuru { get; set; } = string.Empty;
 
-    [Required]
-    public string Aciklama { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Başlık alanı zorunludur.")]
+        [StringLength(200)]
+        [Display(Name = "Başlık")]
+        public string Baslik { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(50)]
-    public string FirsatTuru { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Açıklama alanı zorunludur.")]
+        [Display(Name = "Açıklama")]
+        public string Aciklama { get; set; } = string.Empty;
 
-    [MaxLength(100)]
-    public string Sehir { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Son başvuru tarihi zorunludur.")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Son Başvuru Tarihi")]
+        public DateTime SonBasvuruTarihi { get; set; }
 
-    public DateTime SonTarih { get; set; }
+        [Required(ErrorMessage = "Şehir bilgisi zorunludur.")]
+        [StringLength(100)]
+        [Display(Name = "Şehir Bilgisi")]
+        public string Sehir { get; set; } = string.Empty;
 
-    [Required]
-    [Url]
-    public string KaynakBaglantisi { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Kaynak bağlantısı zorunludur.")]
+        [Url(ErrorMessage = "Geçerli bir web adresi (http:// veya https://) giriniz.")]
+        [StringLength(500)]
+        [Display(Name = "Kaynak Bağlantısı")]
+        public string KaynakBaglantisi { get; set; } = string.Empty;
 
-    public DateTime SonKontrolTarihi { get; set; } = DateTime.UtcNow;
-
-    [MaxLength(50)]
-    public string GuncellikEtiketi { get; set; } = "Güncel";
-
-    public bool OnaylandiMi { get; set; } = false;
-
-    [MaxLength(150)]
-    public string? ArananBolum { get; set; }
-
-    public int? ArananSinif { get; set; }
-
-    public decimal? MinimumNotOrtalamasi { get; set; }
-
-    public ICollection<BasvuruKaydi> BasvuruKayitlari { get; set; } = new List<BasvuruKaydi>();
+        public ICollection<BasvuruKaydi>? Basvurular { get; set; }
+    }
 }

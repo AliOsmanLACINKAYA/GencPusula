@@ -69,13 +69,6 @@ namespace GencPusula.Web.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ArananBolum")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<int?>("ArananSinif")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Baslik")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -86,30 +79,17 @@ namespace GencPusula.Web.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("GuncellikEtiketi")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("KaynakBaglantisi")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal?>("MinimumNotOrtalamasi")
-                        .HasColumnType("numeric");
-
-                    b.Property<bool>("OnaylandiMi")
-                        .HasColumnType("boolean");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Sehir")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime>("SonKontrolTarihi")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("SonTarih")
+                    b.Property<DateTime>("SonBasvuruTarihi")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -352,7 +332,7 @@ namespace GencPusula.Web.Data.Migrations
             modelBuilder.Entity("GencPusula.Web.Models.BasvuruKaydi", b =>
                 {
                     b.HasOne("GencPusula.Web.Models.Firsat", "Firsat")
-                        .WithMany("BasvuruKayitlari")
+                        .WithMany("Basvurular")
                         .HasForeignKey("FirsatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -421,7 +401,7 @@ namespace GencPusula.Web.Data.Migrations
 
             modelBuilder.Entity("GencPusula.Web.Models.Firsat", b =>
                 {
-                    b.Navigation("BasvuruKayitlari");
+                    b.Navigation("Basvurular");
                 });
 
             modelBuilder.Entity("GencPusula.Web.Models.OgrenciProfili", b =>
