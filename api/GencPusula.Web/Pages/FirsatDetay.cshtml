@@ -1,0 +1,30 @@
+@page "{id:int}"
+@model GencPusula.Web.Pages.FirsatDetayModel
+@{
+    ViewData["Title"] = Model.Firsat?.Baslik ?? "Fırsat Detayı";
+    var firsat = Model.Firsat!;
+}
+
+<div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">@firsat.Baslik</h2>
+        <span class="badge bg-dark">@firsat.FirsatTuru</span>
+        <span class="badge bg-secondary">@firsat.Sehir</span>
+    </div>
+    <a asp-page="/Firsatlar" class="btn btn-outline-secondary btn-sm">Listeye Dön</a>
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Son Başvuru Tarihi</dt>
+    <dd class="col-sm-9">@firsat.SonBasvuruTarihi.ToString("dd.MM.yyyy")</dd>
+
+    <dt class="col-sm-3">Açıklama</dt>
+    <dd class="col-sm-9">@firsat.Aciklama</dd>
+
+    <dt class="col-sm-3">Kaynak Bağlantısı</dt>
+    <dd class="col-sm-9">
+        <a href="@firsat.KaynakBaglantisi" target="_blank" rel="noopener noreferrer">
+            @firsat.KaynakBaglantisi
+        </a>
+    </dd>
+</dl>
