@@ -12,25 +12,96 @@
     <a asp-page="/Index" class="btn btn-outline-secondary btn-sm">Ana Sayfaya Dön</a>
 </div>
 
+<form method="get" class="card card-body shadow-sm mb-4 bg-light border-0">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label asp-for="Arama" class="form-label fw-semibold">Arama</label>
+            <input type="text"
+                   asp-for="Arama"
+                   class="form-control"
+                   placeholder="Başlık, açıklama veya şehir ara (örn: Ankara, Staj)..." />
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="SeciliKategori" class="form-label fw-semibold">Kategori (Fırsat Türü)</label>
+            <select asp-for="SeciliKategori" class="form-select">
+                <option value="">Tüm Kategoriler</option>
+                @foreach (var kategori in Model.Kategoriler)
+                {
+                    <option value="@kategori">@kategori</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Filtrele</button>
+            @if (!string.IsNullOrWhiteSpace(Model.Arama) || !string.IsNullOrWhiteSpace(Model.SeciliKategori))
+            {
+                <a asp-page="/Firsatlar" class="btn btn-outline-secondary">Temizle</a>
+            }
+        </div>
+    </div>
+
+    @if (Model.Kategoriler.Any())
+    {
+        <div class="mt-3 pt-2 border-top d-flex flex-wrap gap-2 align-items-center">
+            <small class="text-muted me-1">Hızlı Filtre:</small>
+            <a asp-page="/Firsatlar"
+               asp-route-Arama="@Model.Arama"
+               class="btn btn-sm @(string.IsNullOrEmpty(Model.SeciliKategori) ? "btn-dark" : "btn-outline-dark")">
+                Tümü
+            </a>
+            @foreach (var kategori in Model.Kategoriler)
+            {
+                <a asp-page="/Firsatlar"
+                   asp-route-SeciliKategori="@kategori"
+                   asp-route-Arama="@Model.Arama"
+                   class="btn btn-sm @(Model.SeciliKategori == kategori ? "btn-primary" : "btn-outline-primary")">
+                    @kategori
+                </a>
+            }
+        </div>
+    }
+</form>
+
 @if (Model.Firsatlar.Count == 0)
 {
-    <div class="alert alert-info">Gösterilecek fırsat bulunamadı.</div>
+    <div class="alert alert-warning text-center p-4">
+        <i class="bi bi-search fs-3 d-block mb-2"></i>
+        @if (!string.IsNullOrEmpty(Model.Arama) || !string.IsNullOrEmpty(Model.SeciliKategori))
+        {
+            <div class="alert alert-warning text-center py-4 shadow-sm">
+                <h5 class="fw-bold mb-2">Arama Kriterlerine Uygun Fırsat Bulunamadı</h5>
+                <p class="mb-3">
+                    Seçtiğiniz filtre veya arama kelimesiyle eşleşen bir kayıt bulunmuyor. Farklı anahtar kelimeler deneyebilir veya filtreleri sıfırlayabilirsiniz.
+                </p>
+                <a asp-page="/Firsatlar" class="btn btn-sm btn-outline-dark">Filtreleri Temizle ve Tümünü Gör</a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center py-4 shadow-sm">
+                <h5 class="fw-bold mb-2">Henüz Kayıtlı Fırsat Bulunmuyor</h5>
+                <p class="mb-0">Şu anda sistemde listelenecek aktif bir fırsat ilanı mevcut değil.</p>
+            </div>
+        }
+    </div>
 }
 else
 {
     <div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead>
-            <tr>
-                <th>Tür</th>
-                <th>Başlık</th>
-                <th>Şehir</th>
-                <th>Son Başvuru</th>
-                <th class="text-end">İşlem</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var firsat in Model.Firsatlar)
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Tür</th>
+                    <th>Başlık</th>
+                    <th>Şehir</th>
+                    <th>Son Başvuru</th>
+                    <th class="text-end">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var firsat in Model.Firsatlar)
                 {
                     <tr>
                         <td><span class="badge bg-dark">@firsat.FirsatTuru</span></td>
