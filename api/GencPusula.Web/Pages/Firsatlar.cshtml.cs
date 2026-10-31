@@ -1,18 +1,26 @@
-using Microsoft.AspNetCore.Mvc;
+using GencPusula.Web.Data;
+using GencPusula.Web.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace GencPusula.Web.Pages;
 
 public class FirsatlarModel : PageModel
 {
-    [BindProperty(SupportsGet = true)]
-    public string Kategori { get; set; } = "Tumu";
+    private readonly ApplicationDbContext _db;
 
-    public void OnGet()
+    public FirsatlarModel(ApplicationDbContext db)
     {
-        if (string.IsNullOrWhiteSpace(Kategori))
-        {
-            Kategori = "Tumu";
-        }
+        _db = db;
+    }
+
+    public IReadOnlyList<Firsat> Firsatlar { get; private set; } = new List<Firsat>();
+
+    public async Task OnGetAsync()
+    {
+        Firsatlar = await _db.Firsatlar
+            .AsNoTracking()
+            .OrderBy(f => f.SonBasvuruTarihi)
+            .ToListAsync();
     }
 }
