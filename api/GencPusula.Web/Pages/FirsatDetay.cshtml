@@ -6,18 +6,10 @@
 
 @if (Model.Firsat == null)
 {
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <div>
-            <h2 class="fw-bold mb-1">Kayıt Bulunamadı</h2>
-            <p class="text-muted mb-0">Aradığınız fırsat ilanı bulunamadı veya silinmiş.</p>
-        </div>
-        <a asp-page="/Firsatlar" class="btn btn-outline-secondary btn-sm">Listeye Dön</a>
-    </div>
-
     <div class="alert alert-warning text-center py-4">
-        <h5 class="fw-bold">Geçersiz veya Silinmiş İlan</h5>
-        <p class="mb-3">Erişmeye çalıştığınız fırsat sistemden kaldırılmış olabilir.</p>
-        <a asp-page="/Firsatlar" class="btn btn-dark btn-sm">Fırsat Listesine Geri Dön</a>
+        <h5 class="fw-bold mb-2">Kayıt Bulunamadı</h5>
+        <p class="mb-3">Aradığınız fırsat ilanı bulunamadı veya silinmiş olabilir.</p>
+        <a asp-page="/Firsatlar" class="btn btn-dark btn-sm">Fırsat Listesine Dön</a>
     </div>
 }
 else

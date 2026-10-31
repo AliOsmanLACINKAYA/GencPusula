@@ -66,26 +66,23 @@
 
 @if (Model.Firsatlar.Count == 0)
 {
-    <div class="alert alert-warning text-center p-4">
-        <i class="bi bi-search fs-3 d-block mb-2"></i>
-        @if (!string.IsNullOrEmpty(Model.Arama) || !string.IsNullOrEmpty(Model.SeciliKategori))
-        {
-            <div class="alert alert-warning text-center py-4 shadow-sm">
-                <h5 class="fw-bold mb-2">Arama Kriterlerine Uygun Fırsat Bulunamadı</h5>
-                <p class="mb-3">
-                    Seçtiğiniz filtre veya arama kelimesiyle eşleşen bir kayıt bulunmuyor. Farklı anahtar kelimeler deneyebilir veya filtreleri sıfırlayabilirsiniz.
-                </p>
-                <a asp-page="/Firsatlar" class="btn btn-sm btn-outline-dark">Filtreleri Temizle ve Tümünü Gör</a>
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-info text-center py-4 shadow-sm">
-                <h5 class="fw-bold mb-2">Henüz Kayıtlı Fırsat Bulunmuyor</h5>
-                <p class="mb-0">Şu anda sistemde listelenecek aktif bir fırsat ilanı mevcut değil.</p>
-            </div>
-        }
-    </div>
+    if (!string.IsNullOrEmpty(Model.Arama) || !string.IsNullOrEmpty(Model.SeciliKategori))
+    {
+        <div class="alert alert-warning text-center py-4">
+            <h5 class="fw-bold mb-2">Arama Kriterlerine Uygun Fırsat Bulunamadı</h5>
+            <p class="mb-3">
+                Seçtiğiniz filtre veya arama kelimesiyle eşleşen bir kayıt bulunmuyor. Farklı anahtar kelimeler deneyebilir veya filtreleri sıfırlayabilirsiniz.
+            </p>
+            <a asp-page="/Firsatlar" class="btn btn-sm btn-outline-dark">Filtreleri Temizle ve Tümünü Gör</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-4">
+            <h5 class="fw-bold mb-2">Henüz Kayıtlı Fırsat Bulunmuyor</h5>
+            <p class="mb-0">Şu anda sistemde listelenecek aktif bir fırsat ilanı mevcut değil.</p>
+        </div>
+    }
 }
 else
 {
