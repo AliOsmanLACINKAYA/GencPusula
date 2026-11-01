@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/app_state.dart';
 import '../../core/utils/validators.dart';
 import '../../core/widgets/button.dart';
 import '../../core/widgets/scaffold.dart';
@@ -15,35 +16,38 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _passwordAgainController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isLoading = false;
+  final _email = TextEditingController();
+  final _parola = TextEditingController();
+  final _parolaTekrar = TextEditingController();
+  bool _gizliParola = true;
+  bool _yukleniyor = false;
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _passwordAgainController.dispose();
+    _email.dispose();
+    _parola.dispose();
+    _parolaTekrar.dispose();
     super.dispose();
   }
 
-  Future<void> _register() async {
+  Future<void> _kayitOl() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    setState(() => _yukleniyor = true);
+    try {
+      await appState.kayitOl(_email.text.trim(), _parola.text);
+    } on ApiHatasi catch (e) {
+      _hata(e.mesaj);
+    } catch (_) {
+      _hata('Kayıt yapılamadı. Tekrar dene.');
+    } finally {
+      if (mounted) setState(() => _yukleniyor = false);
+    }
+  }
 
-    // Hafta 1: gerçek API yerine mock kayıt.
-    await Future<void>.delayed(const Duration(milliseconds: 700));
+  void _hata(String mesaj) {
     if (!mounted) return;
-
-    setState(() => _isLoading = false);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Kayıt başarılı (mock).')));
-    context.go('/home');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mesaj)));
   }
 
   @override
@@ -51,23 +55,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return AuthScaffold(
       showBack: true,
       title: 'Aramıza katıl',
-      subtitle: 'Sana uygun burs, staj ve etkinlikleri tek yerde takip et.',
+      subtitle: 'Sana uygun fırsatları tek yerden takip et.',
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             AppTextField(
-              controller: _nameController,
-              label: 'Ad soyad',
-              prefixIcon: Icons.person_outline,
-              textInputAction: TextInputAction.next,
-              validator: (value) =>
-                  validateRequired(value, message: 'Ad soyad gerekli'),
-            ),
-            const SizedBox(height: 14),
-            AppTextField(
-              controller: _emailController,
+              controller: _email,
               label: 'E-posta',
               hint: 'ornek@universite.edu.tr',
               prefixIcon: Icons.mail_outline,
@@ -77,18 +72,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 14),
             AppTextField(
-              controller: _passwordController,
+              controller: _parola,
               label: 'Parola',
               prefixIcon: Icons.lock_outline,
-              obscureText: _obscurePassword,
+              obscureText: _gizliParola,
               textInputAction: TextInputAction.next,
               validator: validatePassword,
               suffixIcon: IconButton(
                 onPressed: () {
-                  setState(() => _obscurePassword = !_obscurePassword);
+                  setState(() => _gizliParola = !_gizliParola);
                 },
                 icon: Icon(
-                  _obscurePassword
+                  _gizliParola
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
                 ),
@@ -96,44 +91,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 14),
             AppTextField(
-              controller: _passwordAgainController,
+              controller: _parolaTekrar,
               label: 'Parola tekrar',
               prefixIcon: Icons.lock_reset_outlined,
-              obscureText: _obscurePassword,
+              obscureText: _gizliParola,
               textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _register(),
+              onFieldSubmitted: (_) => _kayitOl(),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Parola tekrarı gerekli';
                 }
-                if (value != _passwordController.text) {
-                  return 'Parolalar eşleşmiyor';
-                }
+                if (value != _parola.text) return 'Parolalar eşleşmiyor';
                 return null;
               },
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() => _gizliParola = !_gizliParola);
+                },
+                icon: Icon(
+                  _gizliParola
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             AppButton(
               label: 'Kayıt ol',
-              isLoading: _isLoading,
-              onPressed: _register,
+              isLoading: _yukleniyor,
+              onPressed: _kayitOl,
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Hesabın var mı?'),
-                TextButton(
-                  onPressed: () {
-                    if (context.canPop()) {
-                      context.pop();
-                    } else {
-                      context.go('/login');
-                    }
-                  },
-                  child: const Text('Giriş yap'),
-                ),
-              ],
+            TextButton(
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/login');
+                }
+              },
+              child: const Text('Hesabın var mı? Giriş yap'),
             ),
           ],
         ),
