@@ -24,7 +24,9 @@ public class FirsatDetayModel : PageModel
             .FirstOrDefaultAsync(f => f.Id == id);
 
         if (Firsat is null)
-            return NotFound();
+        {
+            Response.StatusCode = StatusCodes.Status404NotFound;
+        }
 
         return Page();
     }
