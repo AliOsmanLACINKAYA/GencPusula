@@ -118,4 +118,42 @@ app.MapControllers();
 app.MapRazorPages()
    .WithStaticAssets();
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
+
+    string[] roller = { GencPusula.Web.Models.Roller.Yonetici, GencPusula.Web.Models.Roller.Ogrenci };
+    foreach (var rol in roller)
+    {
+        if (!await roleManager.RoleExistsAsync(rol))
+        {
+            await roleManager.CreateAsync(new Microsoft.AspNetCore.Identity.IdentityRole(rol));
+        }
+    }
+
+    var adminEmail = "yonetici@gencpusula.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new Microsoft.AspNetCore.Identity.IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+
+        var createResult = await userManager.CreateAsync(adminUser, "Yonetici123!");
+        if (createResult.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, GencPusula.Web.Models.Roller.Yonetici);
+        }
+    }
+    else if (!await userManager.IsInRoleAsync(adminUser, GencPusula.Web.Models.Roller.Yonetici))
+    {
+        await userManager.AddToRoleAsync(adminUser, GencPusula.Web.Models.Roller.Yonetici);
+    }
+}
+
 app.Run();

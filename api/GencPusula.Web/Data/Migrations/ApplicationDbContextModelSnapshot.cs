@@ -92,6 +92,9 @@ namespace GencPusula.Web.Data.Migrations
                     b.Property<DateTime>("SonBasvuruTarihi")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("SonKontrolTarihi")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.ToTable("Firsatlar");

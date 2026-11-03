@@ -9,7 +9,13 @@
         <h2 class="fw-bold mb-0">Fırsat Listesi</h2>
         <p class="text-muted mb-0">Son başvuru tarihine göre sıralanmıştır.</p>
     </div>
-    <a asp-page="/Index" class="btn btn-outline-secondary btn-sm">Ana Sayfaya Dön</a>
+    <div class="d-flex gap-2">
+        @if (User.IsInRole(GencPusula.Web.Models.Roller.Yonetici))
+        {
+            <a asp-page="/Yonetim/Firsatlar" class="btn btn-dark btn-sm">Fırsatları Yönet</a>
+        }
+        <a asp-page="/Index" class="btn btn-outline-secondary btn-sm">Ana Sayfaya Dön</a>
+    </div>
 </div>
 
 <form method="get" class="card card-body shadow-sm mb-4 bg-light border-0">

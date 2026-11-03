@@ -1,0 +1,75 @@
+﻿@page
+@model GencPusula.Web.Pages.Yonetim.FirsatEkleModel
+@{
+    ViewData["Title"] = "Yeni Fırsat Ekle";
+}
+
+<div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-0">Yeni Fırsat Ekle</h2>
+        <p class="text-muted mb-0">Kullanıcı listesinde yayınlanacak yeni bir fırsat ilanı oluşturun.</p>
+    </div>
+    <a asp-page="/Yonetim/Firsatlar" class="btn btn-outline-secondary btn-sm">Yönetim Paneline Dön</a>
+</div>
+
+<div class="card shadow-sm border-0 bg-light">
+    <div class="card-body p-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label asp-for="Firsat.Baslik" class="form-label fw-semibold">Fırsat Başlığı</label>
+                    <input asp-for="Firsat.Baslik" class="form-control" placeholder="Örn: TÜBİTAK Lisans Burs Programı" required />
+                    <span asp-validation-for="Firsat.Baslik" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Firsat.FirsatTuru" class="form-label fw-semibold">Kategori (Fırsat Türü)</label>
+                    <select asp-for="Firsat.FirsatTuru" class="form-select" required>
+                        <option value="">Seçiniz...</option>
+                        <option value="Burs">Burs</option>
+                        <option value="Staj">Staj</option>
+                        <option value="Etkinlik">Etkinlik</option>
+                        <option value="Yarışma">Yarışma</option>
+                        <option value="Eğitim">Eğitim</option>
+                    </select>
+                    <span asp-validation-for="Firsat.FirsatTuru" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Firsat.Sehir" class="form-label fw-semibold">Şehir</label>
+                    <input asp-for="Firsat.Sehir" class="form-control" placeholder="Örn: Ankara, İstanbul, Online" required />
+                    <span asp-validation-for="Firsat.Sehir" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Firsat.SonBasvuruTarihi" class="form-label fw-semibold">Son Başvuru Tarihi</label>
+                    <input asp-for="Firsat.SonBasvuruTarihi" type="date" class="form-control" required />
+                    <span asp-validation-for="Firsat.SonBasvuruTarihi" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Firsat.KaynakBaglantisi" class="form-label fw-semibold">Kaynak Bağlantısı (URL)</label>
+                    <input asp-for="Firsat.KaynakBaglantisi" type="url" class="form-control" placeholder="https://..." required />
+                    <span asp-validation-for="Firsat.KaynakBaglantisi" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Firsat.Aciklama" class="form-label fw-semibold">Açıklama</label>
+                    <textarea asp-for="Firsat.Aciklama" class="form-control" rows="4" placeholder="Fırsat hakkında detaylı bilgi..." required></textarea>
+                    <span asp-validation-for="Firsat.Aciklama" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2 mt-4">
+                    <a asp-page="/Yonetim/Firsatlar" class="btn btn-outline-secondary">İptal</a>
+                    <button type="submit" class="btn btn-dark px-4">Kaydet ve Yayınla</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
