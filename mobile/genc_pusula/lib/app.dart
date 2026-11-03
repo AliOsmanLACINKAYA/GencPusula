@@ -1,4 +1,3 @@
-// app.dart
 import 'package:flutter/material.dart';
 
 import 'core/router/router.dart';
