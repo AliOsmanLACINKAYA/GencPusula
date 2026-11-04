@@ -30,6 +30,11 @@ namespace GencPusula.Web.Pages.Yonetim
                 return RedirectToPage("/Yonetim/Firsatlar");
             }
 
+            if (mevcutFirsat.SonKontrolTarihi == null)
+            {
+                mevcutFirsat.SonKontrolTarihi = DateTime.UtcNow.Date;
+            }
+
             Firsat = mevcutFirsat;
             return Page();
         }
@@ -51,6 +56,10 @@ namespace GencPusula.Web.Pages.Yonetim
             guncellenecekFirsat.FirsatTuru = Firsat.FirsatTuru;
             guncellenecekFirsat.Sehir = Firsat.Sehir;
             guncellenecekFirsat.SonBasvuruTarihi = DateTime.SpecifyKind(Firsat.SonBasvuruTarihi, DateTimeKind.Utc);
+
+            var kontrolTarihi = Firsat.SonKontrolTarihi ?? DateTime.UtcNow.Date;
+            guncellenecekFirsat.SonKontrolTarihi = DateTime.SpecifyKind(kontrolTarihi, DateTimeKind.Utc);
+
             guncellenecekFirsat.KaynakBaglantisi = Firsat.KaynakBaglantisi;
             guncellenecekFirsat.Aciklama = Firsat.Aciklama;
 

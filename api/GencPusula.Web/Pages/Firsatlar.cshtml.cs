@@ -1,58 +1,54 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using GencPusula.Web.Data;
 using GencPusula.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace GencPusula.Web.Pages;
-
-public class FirsatlarModel : PageModel
+namespace GencPusula.Web.Pages
 {
-    private readonly ApplicationDbContext _db;
-
-    public FirsatlarModel(ApplicationDbContext db)
+    public class FirsatlarModel : PageModel
     {
-        _db = db;
-    }
+        private readonly ApplicationDbContext _db;
 
-    public IReadOnlyList<Firsat> Firsatlar { get; private set; } = new List<Firsat>();
-
-    public IReadOnlyList<string> Kategoriler { get; private set; } = new List<string>();
-
-    [BindProperty(SupportsGet = true)]
-    public string? Arama { get; set; }
-
-    [BindProperty(SupportsGet = true)]
-    public string? SeciliKategori { get; set; }
-
-    public async Task OnGetAsync()
-    {
-        Kategoriler = await _db.Firsatlar
-            .AsNoTracking()
-            .Where(f => !string.IsNullOrEmpty(f.FirsatTuru))
-            .Select(f => f.FirsatTuru)
-            .Distinct()
-            .OrderBy(k => k)
-            .ToListAsync();
-
-        var sorgu = _db.Firsatlar.AsNoTracking().AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(SeciliKategori))
+        public FirsatlarModel(ApplicationDbContext db)
         {
-            sorgu = sorgu.Where(f => f.FirsatTuru == SeciliKategori);
+            _db = db;
         }
 
-        if (!string.IsNullOrWhiteSpace(Arama))
-        {
-            var aranan = Arama.Trim().ToLower();
-            sorgu = sorgu.Where(f =>
-                f.Baslik.ToLower().Contains(aranan) ||
-                f.Aciklama.ToLower().Contains(aranan) ||
-                f.Sehir.ToLower().Contains(aranan));
-        }
+        public List<Firsat> FirsatListesi { get; set; } = new();
 
-        Firsatlar = await sorgu
-            .OrderBy(f => f.SonBasvuruTarihi)
-            .ToListAsync();
+        [BindProperty(SupportsGet = true)]
+        public string? AramaMetni { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? SeciliTur { get; set; }
+
+        public List<string> Kategoriler { get; set; } = new()
+        {
+            "Burs", "Staj", "Etkinlik", "Yarışma", "Eğitim"
+        };
+
+        public async Task OnGetAsync()
+        {
+            var sorgu = _db.Firsatlar.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(AramaMetni))
+            {
+                sorgu = sorgu.Where(f =>
+                    f.Baslik.Contains(AramaMetni) ||
+                    f.Aciklama.Contains(AramaMetni) ||
+                    f.Sehir.Contains(AramaMetni));
+            }
+
+            if (!string.IsNullOrWhiteSpace(SeciliTur))
+            {
+                sorgu = sorgu.Where(f => f.FirsatTuru == SeciliTur);
+            }
+
+            FirsatListesi = await sorgu.OrderBy(f => f.SonBasvuruTarihi).ToListAsync();
+        }
     }
 }

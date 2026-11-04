@@ -21,7 +21,8 @@ namespace GencPusula.Web.Pages.Yonetim
         [BindProperty]
         public Firsat Firsat { get; set; } = new()
         {
-            SonBasvuruTarihi = DateTime.UtcNow.Date.AddDays(14)
+            SonBasvuruTarihi = DateTime.UtcNow.Date.AddDays(14),
+            SonKontrolTarihi = DateTime.UtcNow.Date
         };
 
         public void OnGet()
@@ -36,6 +37,9 @@ namespace GencPusula.Web.Pages.Yonetim
             }
 
             Firsat.SonBasvuruTarihi = DateTime.SpecifyKind(Firsat.SonBasvuruTarihi, DateTimeKind.Utc);
+
+            var kontrolTarihi = Firsat.SonKontrolTarihi ?? DateTime.UtcNow.Date;
+            Firsat.SonKontrolTarihi = DateTime.SpecifyKind(kontrolTarihi, DateTimeKind.Utc);
 
             _db.Firsatlar.Add(Firsat);
             await _db.SaveChangesAsync();
