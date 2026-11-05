@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../core/app_state.dart';
 import '../../core/theme/colors.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -9,120 +9,64 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final rol = appState.yoneticiMi ? 'Yönetici' : 'Kullanıcı';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profil')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+        padding: const EdgeInsets.all(20),
         children: [
-          Center(
-            child: Column(
-              children: [
-                const CircleAvatar(
-                  radius: 44,
-                  backgroundColor: AppColors.primary,
-                  child: Text(
-                    'KT',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text('Kadirhan Topal', style: textTheme.titleLarge),
-                const SizedBox(height: 4),
-                Text(
-                  'kadirhan@example.com',
-                  style: textTheme.bodyMedium?.copyWith(color: AppColors.muted),
-                ),
-              ],
-            ),
+          const CircleAvatar(
+            radius: 44,
+            backgroundColor: AppColors.primary,
+            child: Icon(Icons.person, color: Colors.white, size: 44),
           ),
+          const SizedBox(height: 12),
+          Text(
+            appState.email,
+            textAlign: TextAlign.center,
+            style: textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Center(child: Chip(label: Text(rol))),
           const SizedBox(height: 24),
-          Card(
+          const Card(
             child: Column(
               children: [
-                _InfoTile(
-                  icon: Icons.school_outlined,
-                  title: 'Bölüm',
-                  value: 'Hafta 4’te eklenecek',
+                ListTile(
+                  leading: Icon(Icons.school_outlined),
+                  title: Text('Bölüm'),
+                  subtitle: Text('Hafta 4’te eklenecek'),
                 ),
-                const Divider(),
-                _InfoTile(
-                  icon: Icons.layers_outlined,
-                  title: 'Sınıf',
-                  value: 'Hafta 4’te eklenecek',
+                Divider(height: 1),
+                ListTile(
+                  leading: Icon(Icons.layers_outlined),
+                  title: Text('Sınıf'),
+                  subtitle: Text('Hafta 4’te eklenecek'),
                 ),
-                const Divider(),
-                _InfoTile(
-                  icon: Icons.percent_outlined,
-                  title: 'Not ortalaması',
-                  value: 'Hafta 4’te eklenecek',
+                Divider(height: 1),
+                ListTile(
+                  leading: Icon(Icons.percent_outlined),
+                  title: Text('Not ortalaması'),
+                  subtitle: Text('Hafta 4’te eklenecek'),
                 ),
               ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: ListTile(
-              leading: const Icon(
-                Icons.notifications_none_rounded,
-                color: AppColors.primary,
-              ),
-              title: const Text('Bildirimler'),
-              subtitle: const Text('Yakında'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Bildirimler yakında eklenecek.'),
-                  ),
-                );
-              },
             ),
           ),
           const SizedBox(height: 24),
           OutlinedButton.icon(
-            onPressed: () => context.go('/login'),
+            onPressed: () async {
+              await appState.cikisYap();
+            },
             icon: const Icon(Icons.logout),
             label: const Text('Çıkış yap'),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size.fromHeight(52),
               foregroundColor: AppColors.error,
               side: const BorderSide(color: AppColors.error),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({
-    required this.icon,
-    required this.title,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String title;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
-      title: Text(title),
-      subtitle: Text(
-        value,
-        style: Theme.of(context).textTheme.bodySmall
-            ?.copyWith(color: AppColors.muted),
       ),
     );
   }

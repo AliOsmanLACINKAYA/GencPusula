@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/app_state.dart';
 import '../../core/utils/validators.dart';
 import '../../core/widgets/button.dart';
 import '../../core/widgets/scaffold.dart';
@@ -15,29 +16,36 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isLoading = false;
+  final _email = TextEditingController();
+  final _parola = TextEditingController();
+  bool _gizliParola = true;
+  bool _yukleniyor = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _email.dispose();
+    _parola.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _girisYap() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    setState(() => _yukleniyor = true);
+    try {
+      await appState.girisYap(_email.text.trim(), _parola.text);
+    } on ApiHatasi catch (e) {
+      _hata(e.mesaj);
+    } catch (_) {
+      _hata('Giriş yapılamadı. Tekrar dene.');
+    } finally {
+      if (mounted) setState(() => _yukleniyor = false);
+    }
+  }
 
-    // Hafta 1: gerçek API yerine mock giriş.
-    await Future<void>.delayed(const Duration(milliseconds: 700));
+  void _hata(String mesaj) {
     if (!mounted) return;
-
-    setState(() => _isLoading = false);
-    context.go('/home');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mesaj)));
   }
 
   @override
@@ -51,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             AppTextField(
-              controller: _emailController,
+              controller: _email,
               label: 'E-posta',
               hint: 'ornek@universite.edu.tr',
               prefixIcon: Icons.mail_outline,
@@ -61,19 +69,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 14),
             AppTextField(
-              controller: _passwordController,
+              controller: _parola,
               label: 'Parola',
               prefixIcon: Icons.lock_outline,
-              obscureText: _obscurePassword,
+              obscureText: _gizliParola,
               textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _login(),
+              onFieldSubmitted: (_) => _girisYap(),
               validator: validatePassword,
               suffixIcon: IconButton(
                 onPressed: () {
-                  setState(() => _obscurePassword = !_obscurePassword);
+                  setState(() => _gizliParola = !_gizliParola);
                 },
                 icon: Icon(
-                  _obscurePassword
+                  _gizliParola
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
                 ),
@@ -82,19 +90,12 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             AppButton(
               label: 'Giriş yap',
-              isLoading: _isLoading,
-              onPressed: _login,
+              isLoading: _yukleniyor,
+              onPressed: _girisYap,
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Hesabın yok mu?'),
-                TextButton(
-                  onPressed: () => context.push('/register'),
-                  child: const Text('Kayıt ol'),
-                ),
-              ],
+            TextButton(
+              onPressed: () => context.push('/register'),
+              child: const Text('Hesabın yok mu? Kayıt ol'),
             ),
           ],
         ),
