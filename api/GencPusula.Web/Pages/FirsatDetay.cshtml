@@ -1,4 +1,5 @@
 @page "{id:int}"
+@using GencPusula.Web.Models
 @model GencPusula.Web.Pages.FirsatDetayModel
 @{
     ViewData["Title"] = Model.SeciliFirsat?.Baslik ?? "Fırsat Detayı";
@@ -13,10 +14,13 @@
 }
 else
 {
+    var guncellik = GuncellikDurumu.Hesapla(Model.SeciliFirsat?.SonKontrolTarihi);
+
     <div class="card shadow-sm mt-3">
         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
             <div>
-                <span class="badge bg-dark me-2">@Model.SeciliFirsat.FirsatTuru</span>
+                <span class="badge bg-dark me-2">@Model.SeciliFirsat!.FirsatTuru</span>
+                <span class="badge @guncellik.Sinif me-2">@guncellik.Etiket</span>
                 <span class="text-muted">@Model.SeciliFirsat.Sehir</span>
             </div>
             <div class="text-end">

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 // Doğrulama kurallarını bu dosayda kullanacağız.
 namespace GencPusula.Web.Models
 {
-    public class Firsat
+    public class Firsat : IValidatableObject
     {
         //Birincil anahtar ID olarak belirlendi
         [Key]
@@ -42,5 +42,15 @@ namespace GencPusula.Web.Models
         public DateTime? SonKontrolTarihi { get; set; }
         public Kategori? Kategori { get; set; }
         public ICollection<BasvuruKaydi>? Basvurular { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (SonBasvuruTarihi.Date < DateTime.Today)
+            {
+                yield return new ValidationResult(
+                    "Son başvuru tarihi geçmiş olamaz.",
+                    new[] { nameof(SonBasvuruTarihi) });
+            }
+        }
     }
 }
