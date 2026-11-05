@@ -10,9 +10,9 @@ public class BasvuruKaydi
 
     public Firsat? Firsat { get; set; }
 
-    public int OgrenciProfiliId { get; set; }
+    public int KullaniciProfiliId { get; set; }
 
-    public OgrenciProfili? OgrenciProfili { get; set; }
+    public KullaniciProfili? KullaniciProfili { get; set; }
 
     [Required]
     [MaxLength(50)]

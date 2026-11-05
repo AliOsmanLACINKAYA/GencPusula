@@ -2,7 +2,7 @@
 
 namespace GencPusula.Web.Models;
 
-public class OgrenciProfili
+public class KullaniciProfili
 {
     public int Id { get; set; }
 

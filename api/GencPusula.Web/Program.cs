@@ -81,7 +81,7 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// --- Roller ---
+// --- Roller ve başlangıç verileri ---
 using (var scope = app.Services.CreateScope())
 {
     var rolYoneticisi = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -93,7 +93,42 @@ using (var scope = app.Services.CreateScope())
     }
 
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await KategoriSeeder.CalistirAsync(db);
     await FirsatSeeder.CalistirAsync(db);
+
+    var adminEmail = builder.Configuration["Seed:AdminEmail"];
+    var adminPassword = builder.Configuration["Seed:AdminPassword"];
+
+    if (!string.IsNullOrWhiteSpace(adminEmail) && !string.IsNullOrWhiteSpace(adminPassword))
+    {
+        var kullaniciYoneticisi = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var adminUser = await kullaniciYoneticisi.FindByEmailAsync(adminEmail);
+
+        if (adminUser is null)
+        {
+            adminUser = new IdentityUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
+            var olusturmaSonucu = await kullaniciYoneticisi.CreateAsync(adminUser, adminPassword);
+            if (!olusturmaSonucu.Succeeded)
+            {
+                app.Logger.LogWarning(
+                    "Admin kullanıcısı oluşturulamadı: {Hatalar}",
+                    string.Join(" ", olusturmaSonucu.Errors.Select(e => e.Description)));
+                adminUser = null;
+            }
+        }
+
+        if (adminUser is not null &&
+            !await kullaniciYoneticisi.IsInRoleAsync(adminUser, Roller.Yonetici))
+        {
+            await kullaniciYoneticisi.AddToRoleAsync(adminUser, Roller.Yonetici);
+        }
+    }
 }
 
 // --- Ara katmanlar ---

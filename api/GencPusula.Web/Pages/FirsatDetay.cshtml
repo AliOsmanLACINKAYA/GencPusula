@@ -1,42 +1,81 @@
 @page "{id:int}"
 @model GencPusula.Web.Pages.FirsatDetayModel
 @{
-    ViewData["Title"] = Model.Firsat?.Baslik ?? "Fırsat Bulunamadı";
+    ViewData["Title"] = Model.SeciliFirsat?.Baslik ?? "Fırsat Detayı";
 }
 
-@if (Model.Firsat == null)
+@if (Model.SeciliFirsat == null)
 {
-    <div class="alert alert-warning text-center py-4">
-        <h5 class="fw-bold mb-2">Kayıt Bulunamadı</h5>
-        <p class="mb-3">Aradığınız fırsat ilanı bulunamadı veya silinmiş olabilir.</p>
-        <a asp-page="/Firsatlar" class="btn btn-dark btn-sm">Fırsat Listesine Dön</a>
+    <div class="alert alert-warning mt-4">
+        Aradığınız fırsat ilanı bulunamadı veya yayından kaldırılmış.
     </div>
+    <a asp-page="/Firsatlar" class="btn btn-secondary">Fırsat Listesine Dön</a>
 }
 else
 {
-    var firsat = Model.Firsat;
-
-    <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-4">
-        <div>
-            <h2 class="fw-bold mb-1">@firsat.Baslik</h2>
-            <span class="badge bg-dark">@firsat.FirsatTuru</span>
-            <span class="badge bg-secondary">@firsat.Sehir</span>
+    <div class="card shadow-sm mt-3">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <div>
+                <span class="badge bg-dark me-2">@Model.SeciliFirsat.FirsatTuru</span>
+                <span class="text-muted">@Model.SeciliFirsat.Sehir</span>
+            </div>
+            <div class="text-end">
+                <div class="text-danger fw-bold small">
+                    Son Başvuru Tarihi: @Model.SeciliFirsat.SonBasvuruTarihi.ToString("dd.MM.yyyy")
+                </div>
+                <div class="text-muted small">
+                    Son Kontrol Tarihi: @(Model.SeciliFirsat.SonKontrolTarihi.HasValue ? Model.SeciliFirsat.SonKontrolTarihi.Value.ToString("dd.MM.yyyy") : "Belirtilmedi")
+                </div>
+            </div>
         </div>
-        <a asp-page="/Firsatlar" class="btn btn-outline-secondary btn-sm">Listeye Dön</a>
+
+        <div class="card-body p-4">
+            <h3 class="card-title fw-bold mb-3">@Model.SeciliFirsat.Baslik</h3>
+            <p class="card-text fs-6" style="line-height: 1.7;">
+                @Model.SeciliFirsat.Aciklama
+            </p>
+
+            <div class="p-3 bg-light rounded border mt-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="mb-1">
+                            <strong>Kaynak Bağlantısı:</strong>
+                            @if (!string.IsNullOrWhiteSpace(Model.SeciliFirsat.KaynakBaglantisi))
+                            {
+                                <a href="@Model.SeciliFirsat.KaynakBaglantisi" target="_blank" rel="noopener noreferrer" class="text-break">
+                                    @Model.SeciliFirsat.KaynakBaglantisi
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Kaynak bağlantısı belirtilmemiş.</span>
+                            }
+                        </div>
+                        <div>
+                            <strong>Son Kontrol Tarihi:</strong>
+                            <span>@(Model.SeciliFirsat.SonKontrolTarihi.HasValue ? Model.SeciliFirsat.SonKontrolTarihi.Value.ToString("dd.MM.yyyy") : "Belirtilmedi")</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        @if (!string.IsNullOrWhiteSpace(Model.SeciliFirsat.KaynakBaglantisi))
+                        {
+                            <a href="@Model.SeciliFirsat.KaynakBaglantisi" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-sm">
+                                Resmi Kaynağı Aç
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center py-3">
+            <a asp-page="/Firsatlar" class="btn btn-outline-secondary">← Listeye Geri Dön</a>
+            @if (User.IsInRole(GencPusula.Web.Models.Roller.Yonetici))
+            {
+                <a asp-page="/Yonetim/FirsatDuzenle" asp-route-id="@Model.SeciliFirsat.Id" class="btn btn-outline-primary btn-sm">
+                    Bu İlanı Düzenle
+                </a>
+            }
+        </div>
     </div>
-
-    <dl class="row">
-        <dt class="col-sm-3">Son Başvuru Tarihi</dt>
-        <dd class="col-sm-9">@firsat.SonBasvuruTarihi.ToString("dd.MM.yyyy")</dd>
-
-        <dt class="col-sm-3">Açıklama</dt>
-        <dd class="col-sm-9">@firsat.Aciklama</dd>
-
-        <dt class="col-sm-3">Kaynak Bağlantısı</dt>
-        <dd class="col-sm-9">
-            <a href="@firsat.KaynakBaglantisi" target="_blank" rel="noopener noreferrer">
-                @firsat.KaynakBaglantisi
-            </a>
-        </dd>
-    </dl>
 }
