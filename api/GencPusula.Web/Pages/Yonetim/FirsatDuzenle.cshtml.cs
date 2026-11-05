@@ -22,6 +22,8 @@ namespace GencPusula.Web.Pages.Yonetim
         [BindProperty]
         public Firsat Firsat { get; set; } = new();
 
+        public List<string> Kategoriler { get; private set; } = new();
+
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var mevcutFirsat = await _db.Firsatlar.FirstOrDefaultAsync(f => f.Id == id);
@@ -30,12 +32,8 @@ namespace GencPusula.Web.Pages.Yonetim
                 return RedirectToPage("/Yonetim/Firsatlar");
             }
 
-            if (mevcutFirsat.SonKontrolTarihi == null)
-            {
-                mevcutFirsat.SonKontrolTarihi = DateTime.UtcNow.Date;
-            }
-
             Firsat = mevcutFirsat;
+            Kategoriler = await KategoriListesi.YukleAsync(_db);
             return Page();
         }
 
@@ -43,6 +41,7 @@ namespace GencPusula.Web.Pages.Yonetim
         {
             if (!ModelState.IsValid)
             {
+                Kategoriler = await KategoriListesi.YukleAsync(_db);
                 return Page();
             }
 
@@ -56,9 +55,7 @@ namespace GencPusula.Web.Pages.Yonetim
             guncellenecekFirsat.FirsatTuru = Firsat.FirsatTuru;
             guncellenecekFirsat.Sehir = Firsat.Sehir;
             guncellenecekFirsat.SonBasvuruTarihi = DateTime.SpecifyKind(Firsat.SonBasvuruTarihi, DateTimeKind.Utc);
-
-            var kontrolTarihi = Firsat.SonKontrolTarihi ?? DateTime.UtcNow.Date;
-            guncellenecekFirsat.SonKontrolTarihi = DateTime.SpecifyKind(kontrolTarihi, DateTimeKind.Utc);
+            guncellenecekFirsat.SonKontrolTarihi = DateTime.UtcNow;
 
             guncellenecekFirsat.KaynakBaglantisi = Firsat.KaynakBaglantisi;
             guncellenecekFirsat.Aciklama = Firsat.Aciklama;

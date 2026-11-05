@@ -24,28 +24,28 @@ namespace GencPusula.Web.Pages
         public string? AramaMetni { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public string? SeciliTur { get; set; }
+        public string? SeciliKategori { get; set; }
 
-        public List<string> Kategoriler { get; set; } = new()
-        {
-            "Burs", "Staj", "Etkinlik", "Yarışma", "Eğitim"
-        };
+        public List<string> Kategoriler { get; set; } = new();
 
         public async Task OnGetAsync()
         {
-            var sorgu = _db.Firsatlar.AsQueryable();
+            Kategoriler = await KategoriListesi.YukleAsync(_db);
+
+            var sorgu = _db.Firsatlar.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(AramaMetni))
             {
+                var aranan = AramaMetni.Trim().ToLower();
                 sorgu = sorgu.Where(f =>
-                    f.Baslik.Contains(AramaMetni) ||
-                    f.Aciklama.Contains(AramaMetni) ||
-                    f.Sehir.Contains(AramaMetni));
+                    f.Baslik.ToLower().Contains(aranan) ||
+                    f.Aciklama.ToLower().Contains(aranan) ||
+                    f.Sehir.ToLower().Contains(aranan));
             }
 
-            if (!string.IsNullOrWhiteSpace(SeciliTur))
+            if (!string.IsNullOrWhiteSpace(SeciliKategori))
             {
-                sorgu = sorgu.Where(f => f.FirsatTuru == SeciliTur);
+                sorgu = sorgu.Where(f => f.FirsatTuru == SeciliKategori);
             }
 
             FirsatListesi = await sorgu.OrderBy(f => f.SonBasvuruTarihi).ToListAsync();

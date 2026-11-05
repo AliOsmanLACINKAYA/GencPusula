@@ -20,7 +20,9 @@ namespace GencPusula.Web.Pages
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            SeciliFirsat = await _db.Firsatlar.FirstOrDefaultAsync(f => f.Id == id);
+            SeciliFirsat = await _db.Firsatlar
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.Id == id);
 
             if (SeciliFirsat == null)
             {

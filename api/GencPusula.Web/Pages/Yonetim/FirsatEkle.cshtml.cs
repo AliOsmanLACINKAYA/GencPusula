@@ -21,25 +21,26 @@ namespace GencPusula.Web.Pages.Yonetim
         [BindProperty]
         public Firsat Firsat { get; set; } = new()
         {
-            SonBasvuruTarihi = DateTime.UtcNow.Date.AddDays(14),
-            SonKontrolTarihi = DateTime.UtcNow.Date
+            SonBasvuruTarihi = DateTime.UtcNow.Date.AddDays(14)
         };
 
-        public void OnGet()
+        public List<string> Kategoriler { get; private set; } = new();
+
+        public async Task OnGetAsync()
         {
+            Kategoriler = await KategoriListesi.YukleAsync(_db);
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                Kategoriler = await KategoriListesi.YukleAsync(_db);
                 return Page();
             }
 
             Firsat.SonBasvuruTarihi = DateTime.SpecifyKind(Firsat.SonBasvuruTarihi, DateTimeKind.Utc);
-
-            var kontrolTarihi = Firsat.SonKontrolTarihi ?? DateTime.UtcNow.Date;
-            Firsat.SonKontrolTarihi = DateTime.SpecifyKind(kontrolTarihi, DateTimeKind.Utc);
+            Firsat.SonKontrolTarihi = DateTime.UtcNow;
 
             _db.Firsatlar.Add(Firsat);
             await _db.SaveChangesAsync();

@@ -38,8 +38,9 @@ namespace GencPusula.Web.Models
         [Url(ErrorMessage = "Geçerli bir web adresi (http:// veya https://) giriniz.")]
         [StringLength(500)]
         [Display(Name = "Kaynak Bağlantısı")]
-        public string? KaynakBaglantisi { get; set; }
+        public string KaynakBaglantisi { get; set; } = string.Empty;
         public DateTime? SonKontrolTarihi { get; set; }
+        public Kategori? Kategori { get; set; }
         public ICollection<BasvuruKaydi>? Basvurular { get; set; }
     }
 }

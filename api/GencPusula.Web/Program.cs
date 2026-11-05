@@ -81,7 +81,7 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// --- Roller ---
+// --- Roller ve başlangıç verileri ---
 using (var scope = app.Services.CreateScope())
 {
     var rolYoneticisi = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -93,7 +93,42 @@ using (var scope = app.Services.CreateScope())
     }
 
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await KategoriSeeder.CalistirAsync(db);
     await FirsatSeeder.CalistirAsync(db);
+
+    var adminEmail = builder.Configuration["Seed:AdminEmail"];
+    var adminPassword = builder.Configuration["Seed:AdminPassword"];
+
+    if (!string.IsNullOrWhiteSpace(adminEmail) && !string.IsNullOrWhiteSpace(adminPassword))
+    {
+        var kullaniciYoneticisi = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var adminUser = await kullaniciYoneticisi.FindByEmailAsync(adminEmail);
+
+        if (adminUser is null)
+        {
+            adminUser = new IdentityUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
+            var olusturmaSonucu = await kullaniciYoneticisi.CreateAsync(adminUser, adminPassword);
+            if (!olusturmaSonucu.Succeeded)
+            {
+                app.Logger.LogWarning(
+                    "Admin kullanıcısı oluşturulamadı: {Hatalar}",
+                    string.Join(" ", olusturmaSonucu.Errors.Select(e => e.Description)));
+                adminUser = null;
+            }
+        }
+
+        if (adminUser is not null &&
+            !await kullaniciYoneticisi.IsInRoleAsync(adminUser, Roller.Yonetici))
+        {
+            await kullaniciYoneticisi.AddToRoleAsync(adminUser, Roller.Yonetici);
+        }
+    }
 }
 
 // --- Ara katmanlar ---
@@ -117,43 +152,5 @@ app.MapStaticAssets();
 app.MapControllers();
 app.MapRazorPages()
    .WithStaticAssets();
-
-
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
-
-    string[] roller = { GencPusula.Web.Models.Roller.Yonetici, GencPusula.Web.Models.Roller.Ogrenci };
-    foreach (var rol in roller)
-    {
-        if (!await roleManager.RoleExistsAsync(rol))
-        {
-            await roleManager.CreateAsync(new Microsoft.AspNetCore.Identity.IdentityRole(rol));
-        }
-    }
-
-    var adminEmail = "yonetici@gencpusula.com";
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-    if (adminUser == null)
-    {
-        adminUser = new Microsoft.AspNetCore.Identity.IdentityUser
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-
-        var createResult = await userManager.CreateAsync(adminUser, "Yonetici123!");
-        if (createResult.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, GencPusula.Web.Models.Roller.Yonetici);
-        }
-    }
-    else if (!await userManager.IsInRoleAsync(adminUser, GencPusula.Web.Models.Roller.Yonetici))
-    {
-        await userManager.AddToRoleAsync(adminUser, GencPusula.Web.Models.Roller.Yonetici);
-    }
-}
 
 app.Run();

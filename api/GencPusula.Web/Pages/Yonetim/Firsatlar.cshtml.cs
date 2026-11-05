@@ -25,6 +25,7 @@ namespace GencPusula.Web.Pages.Yonetim
         public async Task OnGetAsync()
         {
             Firsatlar = await _db.Firsatlar
+                .AsNoTracking()
                 .OrderBy(f => f.SonBasvuruTarihi)
                 .ToListAsync();
         }

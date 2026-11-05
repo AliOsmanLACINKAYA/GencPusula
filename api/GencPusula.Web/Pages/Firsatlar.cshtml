@@ -32,12 +32,12 @@
             </div>
 
             <div class="col-md-4">
-                <label for="SeciliTur" class="form-label fw-semibold small mb-1">Kategori (Fırsat Türü)</label>
-                <select id="SeciliTur" name="SeciliTur" class="form-select">
+                <label for="SeciliKategori" class="form-label fw-semibold small mb-1">Kategori (Fırsat Türü)</label>
+                <select id="SeciliKategori" name="SeciliKategori" class="form-select">
                     <option value="">Tümü</option>
                     @foreach (var tur in Model.Kategoriler)
                     {
-                        if (Model.SeciliTur == tur)
+                        if (Model.SeciliKategori == tur)
                         {
                             <option value="@tur" selected>@tur</option>
                         }
@@ -51,7 +51,7 @@
 
             <div class="col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-dark w-100">Filtrele</button>
-                @if (!string.IsNullOrWhiteSpace(Model.AramaMetni) || !string.IsNullOrWhiteSpace(Model.SeciliTur))
+                @if (!string.IsNullOrWhiteSpace(Model.AramaMetni) || !string.IsNullOrWhiteSpace(Model.SeciliKategori))
                 {
                     <a asp-page="/Firsatlar" class="btn btn-outline-secondary">Temizle</a>
                 }

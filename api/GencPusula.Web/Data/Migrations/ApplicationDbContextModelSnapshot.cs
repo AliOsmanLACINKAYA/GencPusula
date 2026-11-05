@@ -45,14 +45,14 @@ namespace GencPusula.Web.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
-                    b.Property<int>("OgrenciProfiliId")
+                    b.Property<int>("KullaniciProfiliId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FirsatId");
 
-                    b.HasIndex("OgrenciProfiliId");
+                    b.HasIndex("KullaniciProfiliId");
 
                     b.ToTable("BasvuruKayitlari");
                 });
@@ -97,10 +97,23 @@ namespace GencPusula.Web.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FirsatTuru");
+
                     b.ToTable("Firsatlar");
                 });
 
-            modelBuilder.Entity("GencPusula.Web.Models.OgrenciProfili", b =>
+            modelBuilder.Entity("GencPusula.Web.Models.Kategori", b =>
+                {
+                    b.Property<string>("Ad")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Ad");
+
+                    b.ToTable("Kategoriler");
+                });
+
+            modelBuilder.Entity("GencPusula.Web.Models.KullaniciProfili", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,7 +142,7 @@ namespace GencPusula.Web.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OgrenciProfilleri");
+                    b.ToTable("KullaniciProfilleri");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -340,15 +353,26 @@ namespace GencPusula.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GencPusula.Web.Models.OgrenciProfili", "OgrenciProfili")
+                    b.HasOne("GencPusula.Web.Models.KullaniciProfili", "KullaniciProfili")
                         .WithMany("BasvuruKayitlari")
-                        .HasForeignKey("OgrenciProfiliId")
+                        .HasForeignKey("KullaniciProfiliId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Firsat");
 
-                    b.Navigation("OgrenciProfili");
+                    b.Navigation("KullaniciProfili");
+                });
+
+            modelBuilder.Entity("GencPusula.Web.Models.Firsat", b =>
+                {
+                    b.HasOne("GencPusula.Web.Models.Kategori", "Kategori")
+                        .WithMany("Firsatlar")
+                        .HasForeignKey("FirsatTuru")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Kategori");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -407,7 +431,12 @@ namespace GencPusula.Web.Data.Migrations
                     b.Navigation("Basvurular");
                 });
 
-            modelBuilder.Entity("GencPusula.Web.Models.OgrenciProfili", b =>
+            modelBuilder.Entity("GencPusula.Web.Models.Kategori", b =>
+                {
+                    b.Navigation("Firsatlar");
+                });
+
+            modelBuilder.Entity("GencPusula.Web.Models.KullaniciProfili", b =>
                 {
                     b.Navigation("BasvuruKayitlari");
                 });

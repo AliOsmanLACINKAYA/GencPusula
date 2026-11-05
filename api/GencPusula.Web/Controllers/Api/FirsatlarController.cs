@@ -30,6 +30,7 @@ public class FirsatlarController : ControllerBase
                 FirsatTuru = f.FirsatTuru,
                 Sehir = f.Sehir,
                 SonBasvuruTarihi = f.SonBasvuruTarihi,
+                SonKontrolTarihi = f.SonKontrolTarihi,
                 KaynakBaglantisi = f.KaynakBaglantisi
             })
             .ToListAsync();
@@ -45,5 +46,6 @@ public class FirsatDto
     public string FirsatTuru { get; set; } = string.Empty;
     public string Sehir { get; set; } = string.Empty;
     public DateTime SonBasvuruTarihi { get; set; }
+    public DateTime? SonKontrolTarihi { get; set; }
     public string KaynakBaglantisi { get; set; } = string.Empty;
 }

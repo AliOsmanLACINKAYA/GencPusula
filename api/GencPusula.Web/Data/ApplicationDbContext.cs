@@ -12,6 +12,19 @@ public class ApplicationDbContext : IdentityDbContext
     }
 
     public DbSet<Firsat> Firsatlar { get; set; }
-    public DbSet<OgrenciProfili> OgrenciProfilleri { get; set; }
+    public DbSet<Kategori> Kategoriler { get; set; }
+    public DbSet<KullaniciProfili> KullaniciProfilleri { get; set; }
     public DbSet<BasvuruKaydi> BasvuruKayitlari { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<Firsat>()
+            .HasOne(f => f.Kategori)
+            .WithMany(k => k.Firsatlar)
+            .HasForeignKey(f => f.FirsatTuru)
+            .HasPrincipalKey(k => k.Ad)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
 }

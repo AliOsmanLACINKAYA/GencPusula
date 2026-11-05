@@ -29,11 +29,10 @@
                     <label asp-for="Firsat.FirsatTuru" class="form-label fw-semibold">Kategori (Fırsat Türü)</label>
                     <select asp-for="Firsat.FirsatTuru" class="form-select" required>
                         <option value="">Seçiniz...</option>
-                        <option value="Burs">Burs</option>
-                        <option value="Staj">Staj</option>
-                        <option value="Etkinlik">Etkinlik</option>
-                        <option value="Yarışma">Yarışma</option>
-                        <option value="Eğitim">Eğitim</option>
+                        @foreach (var kategori in Model.Kategoriler)
+                        {
+                            <option value="@kategori">@kategori</option>
+                        }
                     </select>
                     <span asp-validation-for="Firsat.FirsatTuru" class="text-danger small"></span>
                 </div>
@@ -48,12 +47,6 @@
                     <label asp-for="Firsat.SonBasvuruTarihi" class="form-label fw-semibold">Son Başvuru Tarihi</label>
                     <input asp-for="Firsat.SonBasvuruTarihi" type="date" class="form-control" required />
                     <span asp-validation-for="Firsat.SonBasvuruTarihi" class="text-danger small"></span>
-                </div>
-
-                <div class="col-md-4">
-                    <label asp-for="Firsat.SonKontrolTarihi" class="form-label fw-semibold">Son Kontrol Tarihi</label>
-                    <input asp-for="Firsat.SonKontrolTarihi" type="date" class="form-control" required />
-                    <span asp-validation-for="Firsat.SonKontrolTarihi" class="text-danger small"></span>
                 </div>
 
                 <div class="col-12">
