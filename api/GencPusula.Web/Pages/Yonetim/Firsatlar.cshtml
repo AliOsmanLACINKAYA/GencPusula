@@ -1,4 +1,5 @@
 ﻿@page
+@using GencPusula.Web.Models
 @model GencPusula.Web.Pages.Yonetim.FirsatlarModel
 @{
     ViewData["Title"] = "Fırsat Yönetimi";
@@ -56,7 +57,13 @@ else
                         <td class="fw-semibold">@firsat.Baslik</td>
                         <td>@firsat.Sehir</td>
                         <td>@firsat.SonBasvuruTarihi.ToString("dd.MM.yyyy")</td>
-                        <td>@(firsat.SonKontrolTarihi.HasValue ? firsat.SonKontrolTarihi.Value.ToString("dd.MM.yyyy") : "Belirtilmedi")</td>
+                        <td>
+                            @(firsat.SonKontrolTarihi.HasValue ? firsat.SonKontrolTarihi.Value.ToString("dd.MM.yyyy") : "Belirtilmedi")
+                            @{
+                                var guncellik = GuncellikDurumu.Hesapla(firsat.SonKontrolTarihi);
+                            }
+                            <span class="badge @guncellik.Sinif">@guncellik.Etiket</span>
+                        </td>
                         <td>
                             @if (!string.IsNullOrWhiteSpace(firsat.KaynakBaglantisi))
                             {

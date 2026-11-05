@@ -1,4 +1,5 @@
 ﻿@page
+@using GencPusula.Web.Models
 @model GencPusula.Web.Pages.FirsatlarModel
 @{
     ViewData["Title"] = "Fırsatlar";
@@ -73,12 +74,17 @@ else
     <div class="row">
         @foreach (var firsat in Model.FirsatListesi)
         {
+            var guncellik = GuncellikDurumu.Hesapla(firsat.SonKontrolTarihi);
+
             <div class="col-md-6 mb-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="badge bg-dark">@firsat.FirsatTuru</span>
-                            <small class="text-muted">@firsat.Sehir</small>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge @guncellik.Sinif">@guncellik.Etiket</span>
+                                <small class="text-muted">@firsat.Sehir</small>
+                            </div>
                         </div>
 
                         <h5 class="card-title fw-bold">@firsat.Baslik</h5>
