@@ -11,6 +11,10 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
 
+    [DbFunction("translate", "pg_catalog")]
+    public static string Translate(string metin, string kaynak, string hedef) =>
+        throw new NotSupportedException();
+
     public DbSet<Firsat> Firsatlar { get; set; }
     public DbSet<Kategori> Kategoriler { get; set; }
     public DbSet<KullaniciProfili> KullaniciProfilleri { get; set; }

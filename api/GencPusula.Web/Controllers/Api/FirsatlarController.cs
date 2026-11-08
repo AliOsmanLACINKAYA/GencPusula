@@ -40,16 +40,25 @@ public class FirsatlarController : ControllerBase
         sayfa = Math.Max(1, sayfa);
         sayfaBoyutu = Math.Clamp(sayfaBoyutu, 1, 50);
 
+        const string turkce = "ıİşŞğĞüÜöÖçÇ";
+        const string ascii = "iissgguuoocc";
+
         var sorgu = _db.Firsatlar.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(kategori))
         {
-            sorgu = sorgu.Where(f => f.FirsatTuru == kategori);
+            var kategoriAranan = $"%{kategori.Trim()}%";
+            sorgu = sorgu.Where(f => EF.Functions.ILike(
+                ApplicationDbContext.Translate(f.FirsatTuru, turkce, ascii),
+                ApplicationDbContext.Translate(kategoriAranan, turkce, ascii)));
         }
 
         if (!string.IsNullOrWhiteSpace(sehir))
         {
-            sorgu = sorgu.Where(f => f.Sehir == sehir);
+            var sehirAranan = $"%{sehir.Trim()}%";
+            sorgu = sorgu.Where(f => EF.Functions.ILike(
+                ApplicationDbContext.Translate(f.Sehir, turkce, ascii),
+                ApplicationDbContext.Translate(sehirAranan, turkce, ascii)));
         }
 
         if (!string.IsNullOrWhiteSpace(arama))
