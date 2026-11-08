@@ -109,11 +109,38 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  Future<List<FirsatOzeti>> firsatlariGetir() async {
-    final veri = await _get('/api/firsatlar');
-    return (veri as List)
-        .map((e) => FirsatOzeti.fromJson(e as Map<String, dynamic>))
-        .toList();
+  Future<FirsatSayfasi> firsatlariAra({
+    String? kategori,
+    String? sehir,
+    String? arama,
+    int sayfa = 1,
+    int sayfaBoyutu = 10,
+  }) async {
+    final parametreler = <String, dynamic>{
+      'sayfa': sayfa,
+      'sayfaBoyutu': sayfaBoyutu,
+    };
+
+    if (kategori != null && kategori.isNotEmpty) {
+      parametreler['kategori'] = kategori;
+    }
+    if (sehir != null && sehir.trim().isNotEmpty) {
+      parametreler['sehir'] = sehir.trim();
+    }
+    if (arama != null && arama.trim().isNotEmpty) {
+      parametreler['arama'] = arama.trim();
+    }
+
+    final veri = await _get(
+      '/api/firsatlar/ara',
+      queryParameters: parametreler,
+    );
+    return FirsatSayfasi.fromJson(veri as Map<String, dynamic>);
+  }
+
+  Future<FirsatOzeti> firsatDetayGetir(int id) async {
+    final veri = await _get('/api/firsatlar/$id');
+    return FirsatOzeti.fromJson(veri as Map<String, dynamic>);
   }
 
   Future<void> _oturumAc(Map<String, dynamic> cevap) async {
@@ -136,19 +163,18 @@ class AppState extends ChangeNotifier {
     String yol,
     Map<String, dynamic> govde,
   ) async {
-    try {
-      final cevap = await _dio.post(yol, data: govde);
-      return cevap.data as Map<String, dynamic>;
-    } on DioException catch (e) {
-      throw ApiHatasi(_mesaj(e));
-    } catch (_) {
-      throw const ApiHatasi('Sunucudan beklenmeyen bir yanıt geldi.');
-    }
+    final veri = await _istek(() => _dio.post(yol, data: govde));
+    if (veri is Map<String, dynamic>) return veri;
+    throw const ApiHatasi('Sunucudan beklenmeyen bir yanıt geldi.');
   }
 
-  Future<dynamic> _get(String yol) async {
+  Future<dynamic> _get(String yol, {Map<String, dynamic>? queryParameters}) {
+    return _istek(() => _dio.get(yol, queryParameters: queryParameters));
+  }
+
+  Future<dynamic> _istek(Future<dynamic> Function() istek) async {
     try {
-      final cevap = await _dio.get(yol);
+      final cevap = await istek();
       return cevap.data;
     } on DioException catch (e) {
       throw ApiHatasi(_mesaj(e));

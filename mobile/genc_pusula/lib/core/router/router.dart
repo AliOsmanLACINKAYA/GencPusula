@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/auth/splash_screen.dart';
+import '../../features/detail/firsat_detay_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/saved/saved_screen.dart';
@@ -31,6 +32,13 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: '/firsat/:id',
+      builder: (context, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        return FirsatDetayScreen(id: id ?? 0);
+      },
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) =>
