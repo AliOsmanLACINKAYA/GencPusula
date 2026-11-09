@@ -121,12 +121,24 @@ namespace GencPusula.Web.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AdSoyad")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("Bolum")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<decimal?>("GenelNotOrtalamasi")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("GuncellenmeTarihi")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("IlgiAlanlari")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -134,11 +146,24 @@ namespace GencPusula.Web.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal?>("NotOrtalamasi")
-                        .HasColumnType("numeric");
+                    b.Property<string>("Sehir")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.Property<int>("Sinif")
-                        .HasColumnType("integer");
+                    b.Property<string>("Sinif")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TercihEdilenTurler")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("YabanciDilSeviyesi")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -354,7 +379,7 @@ namespace GencPusula.Web.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("GencPusula.Web.Models.KullaniciProfili", "KullaniciProfili")
-                        .WithMany("BasvuruKayitlari")
+                        .WithMany()
                         .HasForeignKey("KullaniciProfiliId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -434,11 +459,6 @@ namespace GencPusula.Web.Data.Migrations
             modelBuilder.Entity("GencPusula.Web.Models.Kategori", b =>
                 {
                     b.Navigation("Firsatlar");
-                });
-
-            modelBuilder.Entity("GencPusula.Web.Models.KullaniciProfili", b =>
-                {
-                    b.Navigation("BasvuruKayitlari");
                 });
 #pragma warning restore 612, 618
         }
