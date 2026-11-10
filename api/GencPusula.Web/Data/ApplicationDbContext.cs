@@ -34,5 +34,21 @@ public class ApplicationDbContext : IdentityDbContext
         builder.Entity<KullaniciProfili>()
             .HasIndex(p => p.KullaniciId)
             .IsUnique();
+
+        builder.Entity<KullaniciProfili>()
+            .Property(p => p.IlgiAlanlari)
+            .IsRequired();
+
+        builder.Entity<KullaniciProfili>()
+            .Property(p => p.TercihEdilenTurler)
+            .IsRequired();
+
+        builder.Entity<KullaniciProfili>()
+            .Property(p => p.Sehir)
+            .IsRequired();
+
+        builder.Entity<BasvuruKaydi>()
+            .HasIndex(b => new { b.KullaniciProfiliId, b.FirsatId })
+            .IsUnique();
     }
 }

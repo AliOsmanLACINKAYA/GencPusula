@@ -52,7 +52,8 @@ namespace GencPusula.Web.Data.Migrations
 
                     b.HasIndex("FirsatId");
 
-                    b.HasIndex("KullaniciProfiliId");
+                    b.HasIndex("KullaniciProfiliId", "FirsatId")
+                        .IsUnique();
 
                     b.ToTable("BasvuruKayitlari");
                 });
