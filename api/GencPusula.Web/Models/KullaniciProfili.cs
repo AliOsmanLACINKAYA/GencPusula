@@ -1,26 +1,54 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace GencPusula.Web.Models;
-
-public class KullaniciProfili
+namespace GencPusula.Web.Models
 {
-    public int Id { get; set; }
+    public class KullaniciProfili
+    {
+        public int Id { get; set; }
 
-    [Required]
-    public string KullaniciId { get; set; } = string.Empty;
+        [Required]
+        public string KullaniciId { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(150)]
-    public string Bolum { get; set; } = string.Empty;
+        [Display(Name = "Ad Soyad")]
+        [StringLength(100)]
+        public string AdSoyad { get; set; } = string.Empty;
 
-    [Range(1, 6)]
-    public int Sinif { get; set; }
 
-    [Range(0.0, 4.0)]
-    public decimal? NotOrtalamasi { get; set; }
+        // Üniversiteye gerek olmayabilir. Çünkü her üniversitenin ayrı ayrı içeriklerine ulaşmak bizi zorlayabilir.
+        /*[Display(Name = "Üniversite")]
+        [StringLength(150)]
+        public string Universite { get; set; } = string.Empty;*/
 
-    [MaxLength(500)]
-    public string? IlgiAlanlari { get; set; }
+        [Display(Name = "Bölüm")]
+        [StringLength(150)]
+        public string Bolum { get; set; } = string.Empty;
 
-    public ICollection<BasvuruKaydi> BasvuruKayitlari { get; set; } = new List<BasvuruKaydi>();
+        [Display(Name = "Sınıf / Öğrenim Düzeyi")]
+        [StringLength(50)]
+        public string Sinif { get; set; } = string.Empty;
+
+        [Display(Name = "İlgi Alanları")]
+        [StringLength(500)]
+        public string IlgiAlanlari { get; set; } = string.Empty;
+
+        [Display(Name = "Tercih Edilen Fırsat Türleri")]
+        [StringLength(200)]
+        public string TercihEdilenTurler { get; set; } = string.Empty;
+
+        [Display(Name = "Tercih Edilen Şehir")]
+        [StringLength(100)]
+        public string Sehir { get; set; } = string.Empty;
+
+        [Display(Name = "Genel Not Ortalaması (AGNO)")]
+        [Range(0.00, 4.00)]
+        public decimal? GenelNotOrtalamasi { get; set; }
+
+        [Display(Name = "Yabancı Dil Seviyesi")]
+        [StringLength(50)]
+        public string? YabanciDilSeviyesi { get; set; }
+
+        [Display(Name = "Son Güncellenme Tarihi")]
+        public DateTime GuncellenmeTarihi { get; set; } = DateTime.UtcNow;
+    }
 }

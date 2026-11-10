@@ -1,11 +1,190 @@
 ﻿@page
 @model GencPusula.Web.Pages.ProfilModel
 @{
-    ViewData["Title"] = "Kullanıcı Profili";
+    ViewData["Title"] = Model.KayitliProfilVarMi
+        ? (Model.Duzenle ? "Profili Düzenle" : "Öğrenci Profilim")
+        : "Profil Oluştur";
 }
 
 <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-    <h2 class="fw-bold mb-0">Kullanıcı Profili</h2>
-    <a asp-page="/Index" class="btn btn-outline-secondary btn-sm">Ana Sayfaya Dön</a>
+    <div>
+        <h2 class="fw-bold mb-0">
+            @if (!Model.KayitliProfilVarMi)
+            {
+                <span>Profil Oluşturma Ekranı</span>
+            }
+            else if (Model.Duzenle)
+            {
+                <span>Profil Düzenleme Ekranı</span>
+            }
+            else
+            {
+                <span>Öğrenci Profilim</span>
+            }
+        </h2>
+        <p class="text-muted mb-0">
+            Bölüm, sınıf, ilgi alanları ve fırsat uygunluk değerlendirmesi bilgilerinizi buradan yönetebilirsiniz.
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (Model.KayitliProfilVarMi && !Model.Duzenle)
+        {
+            <a asp-page="/Profil" asp-route-Duzenle="true" class="btn btn-dark btn-sm">Profili Düzenle</a>
+        }
+        <a asp-page="/Firsatlar" class="btn btn-outline-secondary btn-sm">Fırsatlara Git</a>
+    </div>
 </div>
 
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["BasariMesaji"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!Model.KayitliProfilVarMi)
+{
+    <div class="alert alert-info shadow-sm mb-4">
+        <h6 class="fw-bold mb-1">Henüz oluşturulmuş bir profiliniz bulunmuyor</h6>
+        <p class="mb-0 small">
+            Size uygun burs, staj, yarışma ve etkinlik fırsatlarının değerlendirilebilmesi için aşağıdaki formu doldurarak profilinizi oluşturun.
+        </p>
+    </div>
+}
+
+@if (Model.KayitliProfilVarMi && !Model.Duzenle)
+{
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <div>
+                <h5 class="fw-bold mb-0">@(string.IsNullOrWhiteSpace(Model.Profil.AdSoyad) ? "İsimsiz Öğrenci" : Model.Profil.AdSoyad)</h5>
+            </div>
+            <span class="badge bg-dark">@Model.Profil.Sinif</span>
+        </div>
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-uppercase text-muted small border-bottom pb-2">Akademik Bilgiler</h6>
+                    <p class="mb-2"><strong>Bölüm:</strong> @(string.IsNullOrWhiteSpace(Model.Profil.Bolum) ? "Belirtilmedi" : Model.Profil.Bolum)</p>
+                    <p class="mb-2"><strong>Sınıf / Düzey:</strong> @(string.IsNullOrWhiteSpace(Model.Profil.Sinif) ? "Belirtilmedi" : Model.Profil.Sinif)</p>
+                    <p class="mb-0"><strong>Genel Not Ortalaması (AGNO):</strong> @(Model.Profil.GenelNotOrtalamasi.HasValue ? Model.Profil.GenelNotOrtalamasi.Value.ToString("0.00") : "Belirtilmedi")</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-uppercase text-muted small border-bottom pb-2">Uygunluk ve Tercih Kriterleri</h6>
+                    <p class="mb-2"><strong>Tercih Edilen Şehir:</strong> @(string.IsNullOrWhiteSpace(Model.Profil.Sehir) ? "Belirtilmedi" : Model.Profil.Sehir)</p>
+                    <p class="mb-2"><strong>Yabancı Dil Seviyesi:</strong> @(string.IsNullOrWhiteSpace(Model.Profil.YabanciDilSeviyesi) ? "Belirtilmedi" : Model.Profil.YabanciDilSeviyesi)</p>
+                    <p class="mb-2"><strong>Tercih Edilen Fırsat Türleri:</strong> @(string.IsNullOrWhiteSpace(Model.Profil.TercihEdilenTurler) ? "Belirtilmedi" : Model.Profil.TercihEdilenTurler)</p>
+                    <p class="mb-0"><strong>Son Güncellenme:</strong> @Model.Profil.GuncellenmeTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</p>
+                </div>
+
+                <div class="col-12">
+                    <h6 class="fw-bold text-uppercase text-muted small border-bottom pb-2">İlgi Alanları ve Yetkinlikler</h6>
+                    <p class="mb-0">@(string.IsNullOrWhiteSpace(Model.Profil.IlgiAlanlari) ? "Henüz ilgi alanı eklenmemiş." : Model.Profil.IlgiAlanlari)</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-end py-3">
+            <a asp-page="/Profil" asp-route-Duzenle="true" class="btn btn-primary btn-sm px-4">Bilgilerimi Düzenle</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm border-0 bg-light">
+        <div class="card-body p-4">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <h6 class="fw-bold text-uppercase text-secondary mb-3 border-bottom pb-2">1. Temel ve Akademik Bilgiler</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="Profil.AdSoyad" class="form-label fw-semibold"></label>
+                        <input asp-for="Profil.AdSoyad" class="form-control" placeholder="Örn: Ali Osman Laçinkaya" />
+                        <span asp-validation-for="Profil.AdSoyad" class="text-danger small"></span>
+                    </div>
+
+                    <!--<div class="col-md-6">
+                        <label asp-for="Profil.Universite" class="form-label fw-semibold"></label>
+                        <input asp-for="Profil.Universite" class="form-control" placeholder="Örn: Ankara Üniversitesi" />
+                        <span asp-validation-for="Profil.Universite" class="text-danger small"></span>
+                    </div> -->
+
+                    <div class="col-md-6">
+                        <label asp-for="Profil.Bolum" class="form-label fw-semibold"></label>
+                        <input asp-for="Profil.Bolum" class="form-control" placeholder="Örn: Bilgisayar Mühendisliği" />
+                        <span asp-validation-for="Profil.Bolum" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="Profil.Sinif" class="form-label fw-semibold"></label>
+                        <select asp-for="Profil.Sinif" class="form-select">
+                            <option value="">Seçiniz...</option>
+                            @foreach (var sinif in Model.SinifSecenekleri)
+                            {
+                                <option value="@sinif">@sinif</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Profil.Sinif" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="Profil.GenelNotOrtalamasi" class="form-label fw-semibold"></label>
+                        <input asp-for="Profil.GenelNotOrtalamasi" type="number" step="0.01" min="0" max="4" class="form-control" placeholder="Örn: 3.25" />
+                        <span asp-validation-for="Profil.GenelNotOrtalamasi" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-uppercase text-secondary mb-3 border-bottom pb-2">2. İlgi Alanları ve Uygunluk Değerlendirme Kriterleri</h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="Profil.Sehir" class="form-label fw-semibold"></label>
+                        <input asp-for="Profil.Sehir" class="form-control" placeholder="Örn: Ankara, İstanbul, Online" />
+                        <span asp-validation-for="Profil.Sehir" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Profil.YabanciDilSeviyesi" class="form-label fw-semibold"></label>
+                        <select asp-for="Profil.YabanciDilSeviyesi" class="form-select">
+                            <option value="">Seçiniz...</option>
+                            @foreach (var seviye in Model.DilSeviyesiSecenekleri)
+                            {
+                                <option value="@seviye">@seviye</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Profil.YabanciDilSeviyesi" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Profil.TercihEdilenTurler" class="form-label fw-semibold"></label>
+                        <input asp-for="Profil.TercihEdilenTurler" class="form-control" placeholder="Örn: Burs, Staj, Yarışma" />
+                        <span asp-validation-for="Profil.TercihEdilenTurler" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Profil.IlgiAlanlari" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Profil.IlgiAlanlari" class="form-control" rows="4" placeholder="Örn: Web Geliştirme, Yapay Zeka, Mobil Uygulama, Veri Bilimi..."></textarea>
+                        <span asp-validation-for="Profil.IlgiAlanlari" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-end gap-2 mt-4">
+                        @if (Model.KayitliProfilVarMi)
+                        {
+                            <a asp-page="/Profil" class="btn btn-outline-secondary">İptal</a>
+                            <button type="submit" class="btn btn-primary px-4">Değişiklikleri Kaydet</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-dark px-4">Profili Oluştur</button>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
