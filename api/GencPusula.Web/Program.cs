@@ -78,6 +78,7 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<GencPusula.Web.Services.ProfilKayitServisi>();
 
 var app = builder.Build();
 
