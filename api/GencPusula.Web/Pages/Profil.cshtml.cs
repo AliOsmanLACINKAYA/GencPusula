@@ -4,12 +4,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using GencPusula.Web.Data;
 using GencPusula.Web.Models;
+using GencPusula.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace GencPusula.Web.Pages
 {
+    [Authorize]
     public class ProfilModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -26,6 +29,8 @@ namespace GencPusula.Web.Pages
         public bool Duzenle { get; set; }
 
         public bool KayitliProfilVarMi { get; set; }
+
+        public List<string> EksikAlanlar => ProfilKurallari.EksikAlanlar(Profil);
 
         public List<string> SinifSecenekleri { get; set; } = new()
         {
@@ -54,7 +59,7 @@ namespace GencPusula.Web.Pages
 
         private string AktifKullaniciIdGetir()
         {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "varsayilan-ogrenci";
+            return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         }
 
         public async Task OnGetAsync()
@@ -93,6 +98,10 @@ namespace GencPusula.Web.Pages
                 Duzenle = true;
                 return Page();
             }
+
+            Profil.IlgiAlanlari ??= string.Empty;
+            Profil.TercihEdilenTurler ??= string.Empty;
+            Profil.Sehir ??= string.Empty;
 
             var mevcutProfil = await _context.Set<KullaniciProfili>()
                 .FirstOrDefaultAsync(p => p.KullaniciId == kullaniciId);

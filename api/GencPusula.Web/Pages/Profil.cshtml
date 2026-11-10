@@ -43,6 +43,20 @@
     </div>
 }
 
+@if (Model.KayitliProfilVarMi && Model.EksikAlanlar.Count > 0)
+{
+    <div class="alert alert-warning shadow-sm mb-4" role="alert">
+        <h6 class="fw-bold mb-1">Profilinizde eksik bilgiler var</h6>
+        <p class="mb-2 small">Aşağıdaki zorunlu alanları tamamlamanız gereklidir:</p>
+        <ul class="mb-0 small">
+            @foreach (var alan in Model.EksikAlanlar)
+            {
+                <li>@alan</li>
+            }
+        </ul>
+    </div>
+}
+
 @if (!Model.KayitliProfilVarMi)
 {
     <div class="alert alert-info shadow-sm mb-4">
