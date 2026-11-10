@@ -170,6 +170,9 @@ namespace GencPusula.Web.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("KullaniciId")
+                        .IsUnique();
+
                     b.ToTable("KullaniciProfilleri");
                 });
 

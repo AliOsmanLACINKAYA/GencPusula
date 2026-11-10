@@ -25,6 +25,13 @@ namespace GencPusula.Web.Data.Migrations
                 oldClrType: typeof(int),
                 oldType: "integer");
 
+            migrationBuilder.Sql(
+                "UPDATE \"KullaniciProfilleri\" SET \"Sinif\" = CASE \"Sinif\" " +
+                "WHEN '1' THEN '1. Sınıf' WHEN '2' THEN '2. Sınıf' " +
+                "WHEN '3' THEN '3. Sınıf' WHEN '4' THEN '4. Sınıf' " +
+                "WHEN '5' THEN '5. Sınıf' WHEN '6' THEN '6. Sınıf' " +
+                "ELSE \"Sinif\" END;");
+
             migrationBuilder.AlterColumn<string>(
                 name: "IlgiAlanlari",
                 table: "KullaniciProfilleri",
@@ -52,6 +59,10 @@ namespace GencPusula.Web.Data.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            migrationBuilder.Sql(
+                "UPDATE \"KullaniciProfilleri\" SET \"GuncellenmeTarihi\" = NOW() " +
+                "WHERE \"GuncellenmeTarihi\" = '-infinity';");
+
             migrationBuilder.AddColumn<string>(
                 name: "Sehir",
                 table: "KullaniciProfilleri",
@@ -74,11 +85,35 @@ namespace GencPusula.Web.Data.Migrations
                 type: "character varying(50)",
                 maxLength: 50,
                 nullable: true);
+
+            // Mükerrer profillere bağlı başvuruları en eski profile taşı; kayıt kaybını önle.
+            migrationBuilder.Sql(
+                "UPDATE \"BasvuruKayitlari\" b SET \"KullaniciProfiliId\" = (" +
+                "SELECT MIN(k.\"Id\") FROM \"KullaniciProfilleri\" p " +
+                "JOIN \"KullaniciProfilleri\" k ON k.\"KullaniciId\" = p.\"KullaniciId\" " +
+                "WHERE p.\"Id\" = b.\"KullaniciProfiliId\") " +
+                "WHERE EXISTS (SELECT 1 FROM \"KullaniciProfilleri\" p " +
+                "JOIN \"KullaniciProfilleri\" k ON k.\"KullaniciId\" = p.\"KullaniciId\" " +
+                "AND k.\"Id\" < p.\"Id\" WHERE p.\"Id\" = b.\"KullaniciProfiliId\");");
+
+            migrationBuilder.Sql(
+                "DELETE FROM \"KullaniciProfilleri\" p USING \"KullaniciProfilleri\" q " +
+                "WHERE p.\"Id\" > q.\"Id\" AND p.\"KullaniciId\" = q.\"KullaniciId\";");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KullaniciProfilleri_KullaniciId",
+                table: "KullaniciProfilleri",
+                column: "KullaniciId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "IX_KullaniciProfilleri_KullaniciId",
+                table: "KullaniciProfilleri");
+
             migrationBuilder.DropColumn(
                 name: "AdSoyad",
                 table: "KullaniciProfilleri");
@@ -104,14 +139,16 @@ namespace GencPusula.Web.Data.Migrations
                 table: "KullaniciProfilleri",
                 newName: "NotOrtalamasi");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "Sinif",
-                table: "KullaniciProfilleri",
-                type: "integer",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "character varying(50)",
-                oldMaxLength: 50);
+            migrationBuilder.Sql(
+                "UPDATE \"KullaniciProfilleri\" SET \"Sinif\" = CASE " +
+                "WHEN \"Sinif\" = '1. Sınıf' THEN '1' WHEN \"Sinif\" = '2. Sınıf' THEN '2' " +
+                "WHEN \"Sinif\" = '3. Sınıf' THEN '3' WHEN \"Sinif\" = '4. Sınıf' THEN '4' " +
+                "WHEN \"Sinif\" = '5. Sınıf' THEN '5' WHEN \"Sinif\" = '6. Sınıf' THEN '6' " +
+                "ELSE '1' END;");
+
+            migrationBuilder.Sql(
+                "ALTER TABLE \"KullaniciProfilleri\" " +
+                "ALTER COLUMN \"Sinif\" TYPE integer USING \"Sinif\"::integer;");
 
             migrationBuilder.AlterColumn<string>(
                 name: "IlgiAlanlari",
@@ -122,6 +159,10 @@ namespace GencPusula.Web.Data.Migrations
                 oldClrType: typeof(string),
                 oldType: "character varying(500)",
                 oldMaxLength: 500);
+
+            migrationBuilder.Sql(
+                "ALTER TABLE \"KullaniciProfilleri\" " +
+                "ALTER COLUMN \"IlgiAlanlari\" DROP DEFAULT;");
         }
     }
 }

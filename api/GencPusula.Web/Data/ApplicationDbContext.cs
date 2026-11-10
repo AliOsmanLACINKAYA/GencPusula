@@ -30,5 +30,9 @@ public class ApplicationDbContext : IdentityDbContext
             .HasForeignKey(f => f.FirsatTuru)
             .HasPrincipalKey(k => k.Ad)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<KullaniciProfili>()
+            .HasIndex(p => p.KullaniciId)
+            .IsUnique();
     }
 }

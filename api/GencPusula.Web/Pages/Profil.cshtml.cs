@@ -34,6 +34,8 @@ namespace GencPusula.Web.Pages
             "2. Sınıf",
             "3. Sınıf",
             "4. Sınıf",
+            "5. Sınıf",
+            "6. Sınıf",
             "Yüksek Lisans",
             "Doktora",
             "Mezun"
@@ -97,6 +99,7 @@ namespace GencPusula.Web.Pages
 
             if (mevcutProfil == null)
             {
+                Profil.Id = 0;
                 Profil.GuncellenmeTarihi = DateTime.UtcNow;
                 _context.Set<KullaniciProfili>().Add(Profil);
                 TempData["BasariMesaji"] = "Profiliniz başarıyla oluşturuldu.";
