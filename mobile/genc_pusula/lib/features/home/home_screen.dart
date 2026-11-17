@@ -25,10 +25,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _yukleniyor = false;
   String? _hata;
 
+  int _istekNo = 0;
+
   @override
   void initState() {
     super.initState();
     _sayfaYukle(yenile: true);
+    appState.kayitliFirsatlariTazele();
   }
 
   @override
@@ -38,15 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _sayfaYukle({required bool yenile}) async {
-    if (_yukleniyor) return;
+    if (!yenile && _yukleniyor) return;
+
+    final istekNo = ++_istekNo;
 
     setState(() {
       _yukleniyor = true;
-      if (yenile) {
-        _hata = null;
-        _sayfa = 1;
-        _firsatlar = [];
-      }
+      if (yenile) _hata = null;
     });
 
     final metin = _arama.text.trim();
@@ -60,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         sayfaBoyutu: 10,
       );
 
-      if (!mounted) return;
+      if (!mounted || istekNo != _istekNo) return;
       setState(() {
         _firsatlar = yenile
             ? cevap.kayitlar
@@ -71,20 +72,22 @@ class _HomeScreenState extends State<HomeScreen> {
         _hata = null;
       });
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted || istekNo != _istekNo) return;
       final mesaj = e is ApiHatasi
           ? e.mesaj
           : yenile
           ? 'Fırsatlar yüklenemedi. Tekrar dene.'
           : 'Daha fazla fırsat yüklenemedi.';
-      if (yenile) {
+      if (yenile && _firsatlar.isEmpty) {
         setState(() => _hata = mesaj);
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(mesaj)));
       }
     } finally {
-      if (mounted) setState(() => _yukleniyor = false);
+      if (mounted && istekNo == _istekNo) {
+        setState(() => _yukleniyor = false);
+      }
     }
   }
 
@@ -219,6 +222,14 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           children: [
             Expanded(child: Text('Fırsatlar', style: textTheme.titleLarge)),
+            if (_yukleniyor && _firsatlar.isNotEmpty) ...[
+              const SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 8),
+            ],
             Text(
               '$_toplamKayit fırsat',
               style: textTheme.bodySmall?.copyWith(color: AppColors.muted),

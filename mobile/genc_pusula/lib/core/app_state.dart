@@ -6,13 +6,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../shared/models/firsat_ozeti.dart';
+import '../shared/models/kayitli_firsat.dart';
+import '../shared/models/profil.dart';
 import 'config/config.dart';
 
 /// Kullanıcıya gösterilebilecek sade API hatası.
 class ApiHatasi implements Exception {
-  const ApiHatasi(this.mesaj);
+  const ApiHatasi(this.mesaj, {this.kod});
 
   final String mesaj;
+
+  final String? kod;
 
   @override
   String toString() => mesaj;
@@ -100,6 +104,7 @@ class AppState extends ChangeNotifier {
     _token = null;
     email = '';
     roller = const [];
+    _kayitliFirsatKayitIdleri.clear();
     notifyListeners();
 
     try {
@@ -143,6 +148,69 @@ class AppState extends ChangeNotifier {
     return FirsatOzeti.fromJson(veri as Map<String, dynamic>);
   }
 
+  int _kayitliFirsatSurumu = 0;
+  int get kayitliFirsatSurumu => _kayitliFirsatSurumu;
+
+  final Map<int, int> _kayitliFirsatKayitIdleri = {};
+
+  bool kayitliMi(int firsatId) =>
+      _kayitliFirsatKayitIdleri.containsKey(firsatId);
+
+  int? kayitliKayitId(int firsatId) => _kayitliFirsatKayitIdleri[firsatId];
+
+  Future<Profil> profilGetir() async {
+    final veri = await _get('/api/profil');
+    if (veri is Map<String, dynamic>) return Profil.fromJson(veri);
+    throw const ApiHatasi('Sunucudan beklenmeyen bir yanıt geldi.');
+  }
+
+  Future<Profil> profilKaydet(Profil profil) async {
+    final veri = await _put('/api/profil', profil.toJson());
+    return Profil.fromJson(veri);
+  }
+
+  Future<List<KayitliFirsat>> kayitliFirsatlariGetir() async {
+    final veri = await _get('/api/kayitli-firsatlar');
+    if (veri is List) {
+      final kayitlar = veri
+          .map((e) => KayitliFirsat.fromJson(e as Map<String, dynamic>))
+          .toList();
+      _kayitliFirsatKayitIdleri
+        ..clear()
+        ..addEntries(kayitlar.map((k) => MapEntry(k.firsatId, k.id)));
+      notifyListeners();
+      return kayitlar;
+    }
+    throw const ApiHatasi('Sunucudan beklenmeyen bir yanıt geldi.');
+  }
+
+  Future<void> kayitliFirsatlariTazele() async {
+    try {
+      await kayitliFirsatlariGetir();
+    } catch (_) {
+      return;
+    }
+  }
+
+  Future<KayitliFirsat> firsatKaydet(int firsatId) async {
+    final veri = await _post('/api/kayitli-firsatlar', {'firsatId': firsatId});
+    final kayit = KayitliFirsat.fromJson(veri);
+    _kayitliFirsatKayitIdleri[kayit.firsatId] = kayit.id;
+    _kayitliFirsatlarDegisti();
+    return kayit;
+  }
+
+  Future<void> firsatKaydiniKaldir(int kayitId) async {
+    await _delete('/api/kayitli-firsatlar/$kayitId');
+    _kayitliFirsatKayitIdleri.removeWhere((_, id) => id == kayitId);
+    _kayitliFirsatlarDegisti();
+  }
+
+  void _kayitliFirsatlarDegisti() {
+    _kayitliFirsatSurumu++;
+    notifyListeners();
+  }
+
   Future<void> _oturumAc(Map<String, dynamic> cevap) async {
     final token = cevap['token']?.toString() ?? '';
     if (token.isEmpty) {
@@ -168,6 +236,19 @@ class AppState extends ChangeNotifier {
     throw const ApiHatasi('Sunucudan beklenmeyen bir yanıt geldi.');
   }
 
+  Future<Map<String, dynamic>> _put(
+    String yol,
+    Map<String, dynamic> govde,
+  ) async {
+    final veri = await _istek(() => _dio.put(yol, data: govde));
+    if (veri is Map<String, dynamic>) return veri;
+    throw const ApiHatasi('Sunucudan beklenmeyen bir yanıt geldi.');
+  }
+
+  Future<void> _delete(String yol) async {
+    await _istek(() => _dio.delete(yol));
+  }
+
   Future<dynamic> _get(String yol, {Map<String, dynamic>? queryParameters}) {
     return _istek(() => _dio.get(yol, queryParameters: queryParameters));
   }
@@ -177,7 +258,7 @@ class AppState extends ChangeNotifier {
       final cevap = await istek();
       return cevap.data;
     } on DioException catch (e) {
-      throw ApiHatasi(_mesaj(e));
+      throw ApiHatasi(_mesaj(e), kod: _kod(e));
     } catch (_) {
       throw const ApiHatasi('Sunucudan beklenmeyen bir yanıt geldi.');
     }
@@ -205,6 +286,15 @@ class AppState extends ChangeNotifier {
       return 'Sunucu yanıt vermedi. Tekrar dene.';
     }
     return 'Bir hata oluştu. Tekrar dene.';
+  }
+
+  String? _kod(DioException e) {
+    final veri = e.response?.data;
+    if (veri is Map) {
+      final kod = veri['kod'];
+      if (kod is String && kod.isNotEmpty) return kod;
+    }
+    return null;
   }
 
   Map<String, dynamic>? _payload(String token) {

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/app_state.dart';
 import '../../core/theme/colors.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/etiket_badge.dart';
+import '../../core/widgets/kaydet_ikonu.dart';
 import '../../shared/models/firsat_ozeti.dart';
 
 class FirsatDetayScreen extends StatefulWidget {
@@ -22,6 +24,7 @@ class _FirsatDetayScreenState extends State<FirsatDetayScreen> {
   void initState() {
     super.initState();
     _firsat = appState.firsatDetayGetir(widget.id);
+    appState.kayitliFirsatlariTazele();
   }
 
   @override
@@ -29,6 +32,7 @@ class _FirsatDetayScreenState extends State<FirsatDetayScreen> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.id != widget.id) {
       _firsat = appState.firsatDetayGetir(widget.id);
+      appState.kayitliFirsatlariTazele();
     }
   }
 
@@ -52,6 +56,18 @@ class _FirsatDetayScreenState extends State<FirsatDetayScreen> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            actions: [
+              KaydetIkonu(
+                firsatId: widget.id,
+                iconSize: 24,
+                kompakt: false,
+                color: Theme.of(context).colorScheme.onSurface,
+                kaydetmeMesaji: 'Fırsat kaydedildi.',
+                kaldirmaMesaji: 'Fırsat kaydedilenlerden kaldırıldı.',
+                zatenKayitliMesajiniGoster: true,
+                profilAksiyonu: () => context.go('/profile'),
+              ),
+            ],
           ),
           body: _govde(snapshot),
         );

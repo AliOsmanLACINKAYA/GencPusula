@@ -1,8 +1,3 @@
-String? validateRequired(String? value, {String message = 'Bu alan gerekli'}) {
-  if (value == null || value.trim().isEmpty) return message;
-  return null;
-}
-
 String? validateEmail(String? value) {
   final email = value?.trim() ?? '';
   if (email.isEmpty) return 'E-posta gerekli';
