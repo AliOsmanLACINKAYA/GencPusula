@@ -56,6 +56,10 @@ namespace GencPusula.Web.Pages.Yonetim
             guncellenecekFirsat.Sehir = Firsat.Sehir;
             guncellenecekFirsat.SonBasvuruTarihi = DateTime.SpecifyKind(Firsat.SonBasvuruTarihi, DateTimeKind.Utc);
             guncellenecekFirsat.SonKontrolTarihi = DateTime.UtcNow;
+            guncellenecekFirsat.GerekliBolum = Firsat.GerekliBolum;
+            guncellenecekFirsat.GerekliSinif = Firsat.GerekliSinif;
+            guncellenecekFirsat.MinNotOrtalamasi = Firsat.MinNotOrtalamasi;
+            guncellenecekFirsat.GerekliDilSeviyesi = Firsat.GerekliDilSeviyesi;
 
             guncellenecekFirsat.KaynakBaglantisi = Firsat.KaynakBaglantisi;
             guncellenecekFirsat.Aciklama = Firsat.Aciklama;

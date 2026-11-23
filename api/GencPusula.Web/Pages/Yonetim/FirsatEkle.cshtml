@@ -60,6 +60,44 @@
                     <span asp-validation-for="Firsat.Aciklama" class="text-danger small"></span>
                 </div>
 
+                <hr class="my-4" />
+<h6 class="fw-bold text-uppercase text-secondary mb-3">Başvuru ve Uygunluk Şartları (İsteğe Bağlı)</h6>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label asp-for="Firsat.GerekliBolum" class="form-label fw-semibold"></label>
+        <input asp-for="Firsat.GerekliBolum" class="form-control" placeholder="Örn: Bilgisayar Mühendisliği, Yazılım Mühendisliği" />
+        <span asp-validation-for="Firsat.GerekliBolum" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Firsat.GerekliSinif" class="form-label fw-semibold"></label>
+        <input asp-for="Firsat.GerekliSinif" class="form-control" placeholder="Örn: 3. Sınıf, 4. Sınıf" />
+        <span asp-validation-for="Firsat.GerekliSinif" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Firsat.MinNotOrtalamasi" class="form-label fw-semibold"></label>
+        <input asp-for="Firsat.MinNotOrtalamasi" type="number" step="0.01" min="0" max="4" class="form-control" placeholder="Örn: 2.50" />
+        <span asp-validation-for="Firsat.MinNotOrtalamasi" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Firsat.GerekliDilSeviyesi" class="form-label fw-semibold"></label>
+        <select asp-for="Firsat.GerekliDilSeviyesi" class="form-select">
+            <option value="">Şart Belirtilmedi</option>
+            <option value="A1">A1 - Başlangıç</option>
+            <option value="A2">A2 - Temel</option>
+            <option value="B1">B1 - Orta Altı</option>
+            <option value="B2">B2 - Orta Üstü</option>
+            <option value="C1">C1 - İleri</option>
+            <option value="C2">C2 - Yetkin</option>
+        </select>
+        <span asp-validation-for="Firsat.GerekliDilSeviyesi" class="text-danger small"></span>
+    </div>
+</div>
+                
+                
                 <div class="col-12 d-flex justify-content-end gap-2 mt-4">
                     <a asp-page="/Yonetim/Firsatlar" class="btn btn-outline-secondary">İptal</a>
                     <button type="submit" class="btn btn-dark px-4">Kaydet ve Yayınla</button>

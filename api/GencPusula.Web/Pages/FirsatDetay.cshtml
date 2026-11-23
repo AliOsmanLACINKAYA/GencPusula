@@ -59,6 +59,27 @@ else
                             <strong>Son Kontrol Tarihi:</strong>
                             <span>@(Model.SeciliFirsat.SonKontrolTarihi.HasValue ? Model.SeciliFirsat.SonKontrolTarihi.Value.ToString("dd.MM.yyyy") : "Belirtilmedi")</span>
                         </div>
+                        <div class="p-3 bg-light rounded border mt-3">
+                            <h6 class="fw-bold border-bottom pb-2 mb-3">Başvuru Şartları</h6>
+                            <div class="row g-2 small">
+                                <div class="col-md-6">
+                                    <strong>Bölüm Şartı:</strong>
+                                    <span>@(string.IsNullOrWhiteSpace(Model.SeciliFirsat.GerekliBolum) ? "İlanda belirtilmemiş" : Model.SeciliFirsat.GerekliBolum)</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Sınıf Şartı:</strong>
+                                    <span>@(string.IsNullOrWhiteSpace(Model.SeciliFirsat.GerekliSinif) ? "İlanda belirtilmemiş" : Model.SeciliFirsat.GerekliSinif)</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Minimum Not Ortalaması (AGNO):</strong>
+                                    <span>@(Model.SeciliFirsat.MinNotOrtalamasi.HasValue ? Model.SeciliFirsat.MinNotOrtalamasi.Value.ToString("0.00") : "İlanda belirtilmemiş")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Yabancı Dil Şartı:</strong>
+                                    <span>@(string.IsNullOrWhiteSpace(Model.SeciliFirsat.GerekliDilSeviyesi) ? "İlanda belirtilmemiş" : Model.SeciliFirsat.GerekliDilSeviyesi)</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-4 text-md-end mt-3 mt-md-0">
                         @if (!string.IsNullOrWhiteSpace(Model.SeciliFirsat.KaynakBaglantisi))
