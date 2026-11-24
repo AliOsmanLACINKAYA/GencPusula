@@ -103,6 +103,36 @@ public class FirsatlarController : ControllerBase
         });
     }
 
+    [HttpPost]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = Roller.Yonetici)]
+    public async Task<IActionResult> Ekle(Firsat istek)
+    {
+        if (!await _db.Kategoriler.AnyAsync(k => k.Ad == istek.FirsatTuru))
+            ModelState.AddModelError(nameof(istek.FirsatTuru), "Geçerli bir kategori seçin.");
+
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
+        var firsat = new Firsat
+        {
+            FirsatTuru = istek.FirsatTuru,
+            Baslik = istek.Baslik,
+            Aciklama = istek.Aciklama,
+            SonBasvuruTarihi = DateTime.SpecifyKind(istek.SonBasvuruTarihi, DateTimeKind.Utc),
+            Sehir = istek.Sehir,
+            KaynakBaglantisi = istek.KaynakBaglantisi,
+            GerekliBolum = istek.GerekliBolum,
+            GerekliSinif = istek.GerekliSinif,
+            MinNotOrtalamasi = istek.MinNotOrtalamasi,
+            GerekliDilSeviyesi = istek.GerekliDilSeviyesi,
+            SonKontrolTarihi = DateTime.UtcNow
+        };
+
+        _db.Firsatlar.Add(firsat);
+        await _db.SaveChangesAsync();
+
+        return StatusCode(201, FirsatDto.Olustur(firsat, null));
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Detay(int id)
     {
@@ -136,6 +166,7 @@ public class FirsatDto
     public DateTime? SonKontrolTarihi { get; set; }
     public string GuncellikEtiketi { get; set; } = string.Empty;
     public string KaynakBaglantisi { get; set; } = string.Empty;
+    public string OnayDurumu { get; set; } = string.Empty;
     public string? GerekliBolum { get; set; }
     public string? GerekliSinif { get; set; }
     public decimal? MinNotOrtalamasi { get; set; }
@@ -157,6 +188,7 @@ public class FirsatDto
             SonKontrolTarihi = firsat.SonKontrolTarihi,
             GuncellikEtiketi = GuncellikDurumu.Hesapla(firsat.SonKontrolTarihi).Etiket,
             KaynakBaglantisi = firsat.KaynakBaglantisi,
+            OnayDurumu = firsat.OnayDurumu,
             GerekliBolum = firsat.GerekliBolum,
             GerekliSinif = firsat.GerekliSinif,
             MinNotOrtalamasi = firsat.MinNotOrtalamasi,

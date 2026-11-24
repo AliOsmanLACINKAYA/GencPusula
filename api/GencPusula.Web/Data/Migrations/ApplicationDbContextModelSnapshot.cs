@@ -100,6 +100,12 @@ namespace GencPusula.Web.Data.Migrations
                     b.Property<decimal?>("MinNotOrtalamasi")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("OnayDurumu")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("Onaylı");
+
                     b.Property<string>("Sehir")
                         .IsRequired()
                         .HasMaxLength(100)

@@ -31,6 +31,10 @@ public class ApplicationDbContext : IdentityDbContext
             .HasPrincipalKey(k => k.Ad)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.Entity<Firsat>()
+            .Property(f => f.OnayDurumu)
+            .HasDefaultValue("Onaylı");
+
         builder.Entity<KullaniciProfili>()
             .HasIndex(p => p.KullaniciId)
             .IsUnique();
