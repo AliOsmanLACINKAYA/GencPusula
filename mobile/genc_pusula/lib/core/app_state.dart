@@ -148,6 +148,26 @@ class AppState extends ChangeNotifier {
     return FirsatOzeti.fromJson(veri as Map<String, dynamic>);
   }
 
+  Future<List<FirsatOzeti>> firsatlariGetir() async {
+    final veri = await _get('/api/firsatlar');
+    if (veri is List) {
+      return veri
+          .map((e) => FirsatOzeti.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    throw const ApiHatasi('Fırsatlar yüklenemedi.');
+  }
+
+  Future<List<String>> kategorileriGetir() async {
+    final veri = await _get('/api/kategoriler');
+    if (veri is List) return veri.map((e) => e.toString()).toList();
+    throw const ApiHatasi('Kategoriler yüklenemedi.');
+  }
+
+  Future<FirsatOzeti> firsatEkle(Map<String, dynamic> govde) async {
+    return FirsatOzeti.fromJson(await _post('/api/firsatlar', govde));
+  }
+
   int _kayitliFirsatSurumu = 0;
   int get kayitliFirsatSurumu => _kayitliFirsatSurumu;
 

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/admin/admin_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/auth/splash_screen.dart';
@@ -74,7 +74,7 @@ final appRouter = GoRouter(
               path: '/admin',
               redirect: (context, state) =>
                   appState.yoneticiMi ? null : '/home',
-              builder: (context, state) => const _YonetimScreen(),
+              builder: (context, state) => const AdminScreen(),
             ),
           ],
         ),
@@ -82,23 +82,3 @@ final appRouter = GoRouter(
     ),
   ],
 );
-
-class _YonetimScreen extends StatelessWidget {
-  const _YonetimScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Yönetim')),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'Fırsat yönetimi Hafta 5’te eklenecek.',
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
-}

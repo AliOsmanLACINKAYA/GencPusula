@@ -10,6 +10,7 @@ class FirsatOzeti {
     required this.sonKontrolTarihi,
     required this.guncellikEtiketi,
     required this.kaynakBaglantisi,
+    this.onayDurumu = '',
   });
 
   final int id;
@@ -21,6 +22,7 @@ class FirsatOzeti {
   final DateTime? sonKontrolTarihi;
   final String guncellikEtiketi;
   final String kaynakBaglantisi;
+  final String onayDurumu;
 
   factory FirsatOzeti.fromJson(Map<String, dynamic> json) {
     return FirsatOzeti(
@@ -37,6 +39,7 @@ class FirsatOzeti {
       ),
       guncellikEtiketi: json['guncellikEtiketi']?.toString() ?? '',
       kaynakBaglantisi: json['kaynakBaglantisi']?.toString() ?? '',
+      onayDurumu: json['onayDurumu']?.toString() ?? '',
     );
   }
 
