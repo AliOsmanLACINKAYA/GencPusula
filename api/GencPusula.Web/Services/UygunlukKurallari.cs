@@ -93,7 +93,12 @@ public static class UygunlukKurallari
         .Replace("ı", "i").Replace("ş", "s").Replace("ğ", "g")
         .Replace("ü", "u").Replace("ö", "o").Replace("ç", "c").Trim();
 
-    private static string SinifAnahtar(string? metin) => Sadele(metin).Replace(". sinif", "");
+    private static string SinifAnahtar(string? metin) =>
+    Sadele(metin)
+        .Replace(" ", "")
+        .Replace(".sinif", "")
+        .Replace("sinif", "")
+        .TrimEnd('.');
 
     private static int DilSeviyesi(string? metin)
     {
