@@ -41,6 +41,10 @@ namespace GencPusula.Web.Models
         public string KaynakBaglantisi { get; set; } = string.Empty;
         public DateTime? SonKontrolTarihi { get; set; }
 
+        [Display(Name = "Onay Durumu")]
+        [StringLength(20)]
+        public string OnayDurumu { get; set; } = "Onaylı";
+
         [Display(Name = "Bölüm Şartı")]
         [StringLength(250, ErrorMessage = "Bölüm şartı en fazla 250 karakter olabilir.")]
         public string? GerekliBolum { get; set; }

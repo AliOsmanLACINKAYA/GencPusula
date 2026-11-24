@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using GencPusula.Web.Data;
 using GencPusula.Web.Models;
+using GencPusula.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,16 @@ public class FirsatlarController : ControllerBase
         _db = db;
     }
 
+    private string KullaniciId =>
+        User.FindFirstValue(ClaimTypes.NameIdentifier)
+        ?? User.FindFirstValue("sub")
+        ?? string.Empty;
+
+    private Task<KullaniciProfili?> ProfilGetirAsync() =>
+        _db.KullaniciProfilleri
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.KullaniciId == KullaniciId);
+
     [HttpGet]
     public async Task<IActionResult> Listele()
     {
@@ -26,7 +38,9 @@ public class FirsatlarController : ControllerBase
             .OrderBy(f => f.SonBasvuruTarihi)
             .ToListAsync();
 
-        return Ok(firsatlar.Select(FirsatDto.Olustur).ToList());
+        var profil = await ProfilGetirAsync();
+
+        return Ok(firsatlar.Select(f => FirsatDto.Olustur(f, profil)).ToList());
     }
 
     [HttpGet("ara")]
@@ -77,14 +91,46 @@ public class FirsatlarController : ControllerBase
             .Take(sayfaBoyutu)
             .ToListAsync();
 
+        var profil = await ProfilGetirAsync();
+
         return Ok(new SayfaliFirsatCevabi
         {
             ToplamKayit = toplamKayit,
             Sayfa = sayfa,
             SayfaBoyutu = sayfaBoyutu,
             ToplamSayfa = (int)Math.Ceiling((double)toplamKayit / sayfaBoyutu),
-            Kayitlar = kayitlar.Select(FirsatDto.Olustur).ToList()
+            Kayitlar = kayitlar.Select(f => FirsatDto.Olustur(f, profil)).ToList()
         });
+    }
+
+    [HttpPost]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = Roller.Yonetici)]
+    public async Task<IActionResult> Ekle(Firsat istek)
+    {
+        if (!await _db.Kategoriler.AnyAsync(k => k.Ad == istek.FirsatTuru))
+            ModelState.AddModelError(nameof(istek.FirsatTuru), "Geçerli bir kategori seçin.");
+
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
+        var firsat = new Firsat
+        {
+            FirsatTuru = istek.FirsatTuru,
+            Baslik = istek.Baslik,
+            Aciklama = istek.Aciklama,
+            SonBasvuruTarihi = DateTime.SpecifyKind(istek.SonBasvuruTarihi, DateTimeKind.Utc),
+            Sehir = istek.Sehir,
+            KaynakBaglantisi = istek.KaynakBaglantisi,
+            GerekliBolum = istek.GerekliBolum,
+            GerekliSinif = istek.GerekliSinif,
+            MinNotOrtalamasi = istek.MinNotOrtalamasi,
+            GerekliDilSeviyesi = istek.GerekliDilSeviyesi,
+            SonKontrolTarihi = DateTime.UtcNow
+        };
+
+        _db.Firsatlar.Add(firsat);
+        await _db.SaveChangesAsync();
+
+        return StatusCode(201, FirsatDto.Olustur(firsat, null));
     }
 
     [HttpGet("{id:int}")]
@@ -103,7 +149,9 @@ public class FirsatlarController : ControllerBase
             });
         }
 
-        return Ok(FirsatDto.Olustur(firsat));
+        var profil = await ProfilGetirAsync();
+
+        return Ok(FirsatDto.Olustur(firsat, profil));
     }
 }
 
@@ -118,9 +166,17 @@ public class FirsatDto
     public DateTime? SonKontrolTarihi { get; set; }
     public string GuncellikEtiketi { get; set; } = string.Empty;
     public string KaynakBaglantisi { get; set; } = string.Empty;
+    public string OnayDurumu { get; set; } = string.Empty;
+    public string? GerekliBolum { get; set; }
+    public string? GerekliSinif { get; set; }
+    public decimal? MinNotOrtalamasi { get; set; }
+    public string? GerekliDilSeviyesi { get; set; }
+    public UygunlukDto Uygunluk { get; set; } = new();
 
-    public static FirsatDto Olustur(Firsat firsat)
+    public static FirsatDto Olustur(Firsat firsat, KullaniciProfili? profil)
     {
+        var sonuc = UygunlukKurallari.Degerlendir(firsat, profil);
+
         return new FirsatDto
         {
             Id = firsat.Id,
@@ -131,9 +187,29 @@ public class FirsatDto
             SonBasvuruTarihi = firsat.SonBasvuruTarihi,
             SonKontrolTarihi = firsat.SonKontrolTarihi,
             GuncellikEtiketi = GuncellikDurumu.Hesapla(firsat.SonKontrolTarihi).Etiket,
-            KaynakBaglantisi = firsat.KaynakBaglantisi
+            KaynakBaglantisi = firsat.KaynakBaglantisi,
+            OnayDurumu = firsat.OnayDurumu,
+            GerekliBolum = firsat.GerekliBolum,
+            GerekliSinif = firsat.GerekliSinif,
+            MinNotOrtalamasi = firsat.MinNotOrtalamasi,
+            GerekliDilSeviyesi = firsat.GerekliDilSeviyesi,
+            Uygunluk = new UygunlukDto
+            {
+                Durum = sonuc.Durum,
+                Neden = sonuc.Neden,
+                ProfilUyarilari = sonuc.ProfilUyarilari,
+                IlanUyarilari = sonuc.IlanUyarilari
+            }
         };
     }
+}
+
+public class UygunlukDto
+{
+    public string Durum { get; set; } = string.Empty;
+    public string Neden { get; set; } = string.Empty;
+    public List<string> ProfilUyarilari { get; set; } = new();
+    public List<string> IlanUyarilari { get; set; } = new();
 }
 
 public class SayfaliFirsatCevabi
