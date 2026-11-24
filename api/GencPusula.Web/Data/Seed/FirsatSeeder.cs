@@ -25,7 +25,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(15),
                     Sehir = "Ankara",
                     KaynakBaglantisi = "https://example.com/burs/anadolu-teknoloji",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, Elektrik-Elektronik Mühendisliği",
+                    GerekliSinif = "2. Sınıf, 3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.75m,
+                    GerekliDilSeviyesi = "B1"
                 },
                 new Firsat
                 {
@@ -35,7 +39,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(25),
                     Sehir = "İzmir",
                     KaynakBaglantisi = "https://example.com/staj/ege-yazilim",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği",
+                    GerekliSinif = "2. Sınıf, 3. Sınıf",
+                    MinNotOrtalamasi = 2.75m,
+                    GerekliDilSeviyesi = "B1"
                 },
                 new Firsat
                 {
@@ -45,7 +53,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(35),
                     Sehir = "İstanbul",
                     KaynakBaglantisi = "https://example.com/yarisma/mobil-uygulama",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -55,7 +67,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(45),
                     Sehir = "Bursa",
                     KaynakBaglantisi = "https://example.com/etkinlik/kariyer-gunleri",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -65,7 +81,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(55),
                     Sehir = "Trabzon",
                     KaynakBaglantisi = "https://example.com/burs/kuzey-kampus",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -75,7 +95,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(65),
                     Sehir = "İstanbul",
                     KaynakBaglantisi = "https://example.com/staj/dijital-pazarlama",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -85,7 +109,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(20),
                     Sehir = "Ankara",
                     KaynakBaglantisi = "https://example.com/burs/tubitak-lisans",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -95,7 +123,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(40),
                     Sehir = "İstanbul",
                     KaynakBaglantisi = "https://example.com/burs/teknoloji-vakfi",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -105,7 +137,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(30),
                     Sehir = "Ankara",
                     KaynakBaglantisi = "https://example.com/staj/savunma-sanayii",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -115,7 +151,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(50),
                     Sehir = "İstanbul",
                     KaynakBaglantisi = "https://example.com/staj/veri-bilimi",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -125,7 +165,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(18),
                     Sehir = "Eskişehir",
                     KaynakBaglantisi = "https://example.com/yarisma/akilli-sehirler",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -135,7 +179,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(60),
                     Sehir = "İzmir",
                     KaynakBaglantisi = "https://example.com/yarisma/girisimcilik",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -145,7 +193,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(12),
                     Sehir = "Bursa",
                     KaynakBaglantisi = "https://example.com/etkinlik/kariyer-zirvesi",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -155,7 +207,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(35),
                     Sehir = "Ankara",
                     KaynakBaglantisi = "https://example.com/etkinlik/yapay-zeka",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -165,7 +221,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(70),
                     Sehir = "Konya",
                     KaynakBaglantisi = "https://example.com/burs/dijital-donusum",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 },
                 new Firsat
                 {
@@ -175,7 +235,11 @@ namespace GencPusula.Web.Data.Seed
                     SonBasvuruTarihi = DateTime.UtcNow.AddDays(25),
                     Sehir = "Online",
                     KaynakBaglantisi = "https://example.com/staj/uzaktan-staj",
-                    SonKontrolTarihi = DateTime.UtcNow.Date
+                    SonKontrolTarihi = DateTime.UtcNow.Date,
+                    GerekliBolum = "Bilgisayar Mühendisliği, Yazılım Mühendisliği, BÖTE",
+                    GerekliSinif = "3. Sınıf, 4. Sınıf",
+                    MinNotOrtalamasi = 2.50m,
+                    GerekliDilSeviyesi = "B2"
                 }
             };
 

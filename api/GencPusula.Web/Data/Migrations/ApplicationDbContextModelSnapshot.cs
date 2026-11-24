@@ -80,10 +80,25 @@ namespace GencPusula.Web.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<string>("GerekliBolum")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("GerekliDilSeviyesi")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("GerekliSinif")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("KaynakBaglantisi")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<decimal?>("MinNotOrtalamasi")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Sehir")
                         .IsRequired()

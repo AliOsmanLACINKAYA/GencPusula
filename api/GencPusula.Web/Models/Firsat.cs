@@ -40,6 +40,24 @@ namespace GencPusula.Web.Models
         [Display(Name = "Kaynak Bağlantısı")]
         public string KaynakBaglantisi { get; set; } = string.Empty;
         public DateTime? SonKontrolTarihi { get; set; }
+
+        [Display(Name = "Bölüm Şartı")]
+        [StringLength(250, ErrorMessage = "Bölüm şartı en fazla 250 karakter olabilir.")]
+        public string? GerekliBolum { get; set; }
+
+        [Display(Name = "Sınıf / Öğrenim Düzeyi Şartı")]
+        [StringLength(100, ErrorMessage = "Sınıf şartı en fazla 100 karakter olabilir.")]
+        public string? GerekliSinif { get; set; }
+
+        [Display(Name = "Minimum Not Ortalaması (AGNO)")]
+        [Range(0.00, 4.00, ErrorMessage = "Minimum not ortalaması 0.00 ile 4.00 arasında olmalıdır.")]
+        public decimal? MinNotOrtalamasi { get; set; }
+
+        [Display(Name = "Yabancı Dil Şartı")]
+        [StringLength(50, ErrorMessage = "Yabancı dil şartı en fazla 50 karakter olabilir.")]
+        public string? GerekliDilSeviyesi { get; set; }
+
+
         public Kategori? Kategori { get; set; }
         public ICollection<BasvuruKaydi>? Basvurular { get; set; }
 
